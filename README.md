@@ -27,13 +27,22 @@ Copy `.env.example` to `.env` and adjust:
 | Variable | Purpose |
 |----------|---------|
 | `VITE_USE_API` | Set to `true` to call the backend for auth, farms, procurements, and sales. |
-| `VITE_API_URL` | Optional full origin (e.g. `https://your-api.onrender.com`). If empty in dev, Vite proxies `/api` to `http://localhost:4000` (see `vite.config.js`). |
+| `VITE_API_URL` | Optional full origin (e.g. `https://your-api.onrender.com`). If empty in dev, Vite proxies `/api` to your local Nest (see `vite.config.js`, default `http://127.0.0.1:5000`). |
+
+**Same data on localhost and Vercel:** they only match if both use the **same** API (and therefore the same database). Easiest: in `.env` set `VITE_USE_API=true` and `VITE_API_URL=https://your-deployed-api.example.com`, run `npm run dev`, sign in with the same user as production. Do **not** rely on offline-only rows (`localStorage` without API); only server-backed rows (`api-…` ids) appear everywhere.
 
 Example **local dev** with API on port 4000:
 
 ```env
 VITE_USE_API=true
 # VITE_API_URL=
+```
+
+Example **local dev pointing at deployed API** (mirrors cloud data):
+
+```env
+VITE_USE_API=true
+VITE_API_URL=https://your-api.onrender.com
 ```
 
 Example **production build** hitting a hosted API:
