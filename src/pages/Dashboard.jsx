@@ -18,6 +18,7 @@ import { useAgriTrack } from '../context/AgriTrackContext';
 import { useAnimatedNumber } from '../hooks/useAnimatedNumber';
 import { ProduceCashInBarChart, StockPieChart, RevenueTrendChart } from '../components/DashboardCharts';
 import { useToast } from '../context/ToastContext';
+import { profileNameWithoutDemoPrefix } from '../utils/profileDisplayName';
 
 function StatCard({ icon: Icon, label, children, accent, hint }) {
   return (
@@ -77,7 +78,9 @@ export default function Dashboard() {
   }, [apiEnabled, apiStatus.error, toast, t]);
 
   const role = currentUser?.role || 'farmer';
-  const firstName = currentUser?.profile?.name?.split(' ')[0] || t('dashboard.fallbackGreetName');
+  const firstName =
+    profileNameWithoutDemoPrefix(currentUser?.profile?.name)?.split(/\s+/)[0] ||
+    t('dashboard.fallbackGreetName');
 
   const welcomeLine = useMemo(() => {
     if (!currentUser) return '';
@@ -87,8 +90,9 @@ export default function Dashboard() {
         : currentUser.role === 'trader'
           ? t('welcome.traderPanel')
           : t('welcome.farmerWorkspace');
-    const name = (currentUser.profile?.name || '').trim();
-    const roleNameEn = currentUser.role === 'admin' ? 'Admin' : currentUser.role === 'trader' ? 'Trader' : 'Farmer';
+    const name = profileNameWithoutDemoPrefix(currentUser.profile?.name || '');
+    const roleNameEn =
+      currentUser.role === 'admin' ? 'Admin' : currentUser.role === 'trader' ? 'Trader' : 'Farmer';
     if (!name) return panel;
     if (name === roleNameEn) return panel;
     return `${name} · ${panel}`;

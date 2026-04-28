@@ -54,6 +54,8 @@ VITE_API_URL=https://your-api.example.com
 
 `DATABASE_URL` belongs on the **backend**, not in this frontend.
 
+**Login presets:** Farmer and Trader demo quick-fill buttons are **shown by default** on deployed builds (`/auth`). To hide them (e.g. public launch without test accounts visible), set `VITE_HIDE_QUICK_LOGIN=true` in the Vercel/env used at **build** time and redeploy. The Admin preset still appears **only** in Vite development, not in production.
+
 ## Scripts
 
 | Command | Description |

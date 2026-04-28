@@ -68,12 +68,8 @@ export default function Auth() {
     return t('auth.headlineEvening');
   }, [t, i18n.language]);
 
-  /** Farmer/trader quick-fill (and dev: admin) — hidden in API-only production unless VITE_SHOW_QUICK_LOGIN=true (legacy: VITE_SHOW_DEMO_QUICK_LOGIN); shown offline or in Vite dev. */
-  const showQuickLogin =
-    !API_ENABLED ||
-    import.meta.env.DEV ||
-    import.meta.env.VITE_SHOW_QUICK_LOGIN === 'true' ||
-    import.meta.env.VITE_SHOW_DEMO_QUICK_LOGIN === 'true';
+  /** Farmer/trader presets fill login (admin preset stays dev-only; see quickRoleRows). Omit on strict hosts with VITE_HIDE_QUICK_LOGIN=true. */
+  const showQuickLogin = import.meta.env.VITE_HIDE_QUICK_LOGIN !== 'true';
 
   /** In API mode, only treat as signed-in when JWT exists — avoids loop: 401 clears token → /auth → Navigate to /. */
   const hasEffectiveSession =

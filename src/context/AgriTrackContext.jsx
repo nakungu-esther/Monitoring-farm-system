@@ -63,10 +63,16 @@ import { availableTonnesForUser } from '../utils/stockMath';
 import { validateUgCreditLimits } from '../utils/creditRules';
 import { normalizeAppRole } from '../utils/roles';
 import { platformFeeFromTotal } from '../utils/checkoutFee';
+import { profileNameWithoutDemoPrefix } from '../utils/profileDisplayName';
 
 const STORAGE_KEY = 'agritrack-v1';
 
 function mapApiUserToState(u) {
+  const rawName =
+    typeof u?.name === 'string' ? u.name.trim() : '';
+  const name =
+    rawName !== '' ? profileNameWithoutDemoPrefix(rawName) || rawName : '';
+
   return {
     id: u.id,
     email: u.email,
@@ -76,7 +82,7 @@ function mapApiUserToState(u) {
     subscriptionType: u.subscriptionType || 'free',
     premiumUntil: u.premiumUntil || null,
     profile: {
-      name: u.name,
+      name,
       phone: u.phone || '',
       location: u.location || '',
       suiAddress: u.suiAddress || u.sui_address || '',
@@ -215,88 +221,9 @@ const seedState = () => ({
     },
   ],
   currentUserId: null,
-  harvests: [
-    {
-      id: 'h1',
-      userId: 'u-farmer',
-      farmId: 'farm-1',
-      produceName: 'Beans',
-      tonnage: 12,
-      price: 3_000_000,
-      variety: 'NARO (red creole)',
-      qualityGrade: 'high',
-      pricePerKgUgx: 3000,
-      pricingNote: 'Sieved, low moisture, early harvest. Priced for export-grade sorting.',
-      date: '2026-03-15',
-      farmLocation: 'Jinja Farm Block A',
-      latitude: 0.4244,
-      longitude: 33.2042,
-      imageDataUrl: null,
-      createdAt: '2026-03-15T10:00:00.000Z',
-    },
-    {
-      id: 'h2',
-      userId: 'u-farmer',
-      farmId: 'farm-2',
-      produceName: 'Maize',
-      tonnage: 20,
-      price: 1_200_000,
-      variety: 'Local hybrid',
-      qualityGrade: 'medium',
-      pricePerKgUgx: 1200,
-      pricingNote: 'Good dry grain; some mixed sizes. Price reflects local mill standard.',
-      date: '2026-03-28',
-      farmLocation: 'Jinja Farm Block B',
-      latitude: 0.431,
-      longitude: 33.198,
-      imageDataUrl: null,
-      createdAt: '2026-03-28T10:00:00.000Z',
-    },
-  ],
-  sales: [
-    {
-      id: 's1',
-      userId: 'u-farmer',
-      buyerName: 'Trader',
-      produceName: 'Beans',
-      tonnage: 5,
-      totalPayment: 4_500_000,
-      paymentStatus: 'paid',
-      amountPaid: 4_500_000,
-      creditDueDate: '',
-      date: '2026-04-01',
-      walletTxIds: [],
-      createdAt: '2026-04-01T10:00:00.000Z',
-    },
-    {
-      id: 's2',
-      userId: 'u-farmer',
-      buyerName: 'Jane Buyer',
-      produceName: 'Maize',
-      tonnage: 8,
-      totalPayment: 7_000_000,
-      paymentStatus: 'partial',
-      amountPaid: 3_000_000,
-      creditDueDate: '2026-04-20',
-      date: '2026-04-05',
-      walletTxIds: [],
-      createdAt: '2026-04-05T10:00:00.000Z',
-    },
-    {
-      id: 's3',
-      userId: 'u-farmer',
-      buyerName: 'Trader',
-      produceName: 'Maize',
-      tonnage: 3,
-      totalPayment: 2_000_000,
-      paymentStatus: 'credit',
-      amountPaid: 0,
-      creditDueDate: '2026-04-25',
-      date: '2026-04-06',
-      walletTxIds: [],
-      createdAt: '2026-04-06T10:00:00.000Z',
-    },
-  ],
+  /** No baked-in harvest/sale/farm rows: demo login users only; add produce after sign-in or via API sync. */
+  harvests: [],
+  sales: [],
   wallet: {
     connected: false,
     address: '',
@@ -304,40 +231,10 @@ const seedState = () => ({
   },
   walletTransactions: [],
   escrows: [],
-  expenses: [
-    { id: 'e1', userId: 'u-farmer', label: 'Fertilizer', amount: 1_200_000, date: '2026-03-01' },
-    { id: 'e2', userId: 'u-farmer', label: 'Labor', amount: 800_000, date: '2026-03-10' },
-  ],
+  expenses: [],
   readNotifications: [],
-  farms: [
-    {
-      id: 'farm-1',
-      userId: 'u-farmer',
-      name: 'Jinja Block A',
-      latitude: 0.4244,
-      longitude: 33.2042,
-      address: 'Jinja Farm Block A',
-    },
-    {
-      id: 'farm-2',
-      userId: 'u-farmer',
-      name: 'Jinja Block B',
-      latitude: 0.431,
-      longitude: 33.198,
-      address: 'Jinja Farm Block B',
-    },
-  ],
-  seasonalPlans: [
-    {
-      id: 'sp-1',
-      userId: 'u-farmer',
-      crop: 'Maize',
-      plantDate: '2026-02-01',
-      expectedHarvestDate: '2026-06-15',
-      farmId: 'farm-1',
-      notes: 'Long rains season',
-    },
-  ],
+  farms: [],
+  seasonalPlans: [],
   supplyChainEvents: [],
   mockSmsLog: [],
   /** Farmer daily logs (from API or local only; no baked-in seed entries). */
@@ -362,14 +259,22 @@ function ensureSeedUsersPresent(users, seedUsers) {
   return missing.length ? [...users, ...missing] : users;
 }
 
-/** Rename legacy seed profile labels (old “Demo *” display names → Farmer / Trader / Admin). */
+/** Rename legacy seed profile labels (“Demo Farmer” / any “Demo …”) → Farmer / Trader / Admin. */
 function migrateSeedDisplayNames(users) {
   const toName = { 'u-farmer': 'Farmer', 'u-trader': 'Trader', 'u-admin': 'Admin' };
   return users.map((u) => {
     const want = toName[u.id];
     const n = u.profile?.name;
-    if (want && (n === 'Demo Farmer' || n === 'Demo Trader' || n === 'Demo Admin')) {
-      return { ...u, profile: { ...u.profile, name: want } };
+    if (want && typeof n === 'string') {
+      const t = n.trim();
+      if (
+        t === 'Demo Farmer' ||
+        t === 'Demo Trader' ||
+        t === 'Demo Admin' ||
+        /^\s*demo\b/i.test(t)
+      ) {
+        return { ...u, profile: { ...u.profile, name: want } };
+      }
     }
     return u;
   });
@@ -377,9 +282,13 @@ function migrateSeedDisplayNames(users) {
 
 function migrateSalesBuyerNames(sales) {
   if (!Array.isArray(sales)) return sales;
-  return sales.map((s) =>
-    s?.buyerName === 'Demo Trader' ? { ...s, buyerName: 'Trader' } : s,
-  );
+  return sales.map((s) => {
+    if (!s?.buyerName) return s;
+    const b = String(s.buyerName).trim();
+    if (b === 'Demo Trader' || /^demo\s+trader$/i.test(b)) return { ...s, buyerName: 'Trader' };
+    if (/^\s*demo\s+/i.test(b)) return { ...s, buyerName: b.replace(/^\s*demo\s+/i, '').trim() };
+    return s;
+  });
 }
 
 /** Old seed daily reports (fdl-seed-*) are removed from local storage. */
@@ -388,10 +297,35 @@ function withoutSeedFarmDailyLogs(logs) {
   return logs.filter((l) => !String(l?.id).startsWith('fdl-seed-'));
 }
 
+/** Deployed app + API: only Postgres-backed rows use id prefix `api-`. Drop seed/offline rows so Vercel never shows demo Maize/Beans as if it were your DB. */
+function keepApiSyncedOnly(rows) {
+  if (!Array.isArray(rows)) return [];
+  return rows.filter((row) => row && String(row.id).startsWith('api-'));
+}
+
+function applyProdApiSourceOfTruth(state) {
+  return {
+    ...state,
+    harvests: keepApiSyncedOnly(state.harvests),
+    sales: keepApiSyncedOnly(state.sales),
+    farms: keepApiSyncedOnly(state.farms),
+    expenses: keepApiSyncedOnly(state.expenses),
+    seasonalPlans: keepApiSyncedOnly(state.seasonalPlans),
+    supplyChainEvents: keepApiSyncedOnly(state.supplyChainEvents),
+    farmDailyLogs: keepApiSyncedOnly(state.farmDailyLogs),
+    mockSmsLog: keepApiSyncedOnly(state.mockSmsLog),
+  };
+}
+
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return seedState();
+    if (!raw) {
+      if (import.meta.env.PROD && API_ENABLED) {
+        return applyProdApiSourceOfTruth(seedState());
+      }
+      return seedState();
+    }
     const parsed = JSON.parse(raw);
     const base = seedState();
     let users = parsed.users?.length ? parsed.users : base.users;
@@ -415,7 +349,7 @@ function loadState() {
     }));
     users = migrateSeedDisplayNames(users);
     const salesFromStore = Array.isArray(parsed.sales) ? parsed.sales : base.sales;
-    return {
+    const out = {
       ...base,
       ...parsed,
       users,
@@ -431,7 +365,14 @@ function loadState() {
           : base.farmDailyLogs,
       ),
     };
+    if (import.meta.env.PROD && API_ENABLED) {
+      return applyProdApiSourceOfTruth(out);
+    }
+    return out;
   } catch {
+    if (import.meta.env.PROD && API_ENABLED) {
+      return applyProdApiSourceOfTruth(seedState());
+    }
     return seedState();
   }
 }
