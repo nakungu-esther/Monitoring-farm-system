@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriTrack — Pitch Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --forest: #14532d;
+      --green: #15803d;
+      --green-soft: #ecfdf5;
+      --teal: #0f766e;
+      --ink: #0c1222;
+      --slate: #475569;
+      --slate-light: #94a3b8;
+      --surface: #ffffff;
+      --surface-warm: #fafdfb;
+      --farmer: #16a34a;
+      --farmer-bg: #f0fdf4;
+      --trader: #2563eb;
+      --trader-bg: #eff6ff;
+      --admin: #334155;
+      --admin-bg: #f1f5f9;
+      --chain: #7c3aed;
+      --chain-bg: #f5f3ff;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --shadow-slide: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 24px 48px -12px rgba(15, 23, 42, 0.18);
+      --shadow-card: 0 4px 14px rgba(21, 128, 61, 0.1);
+      --shadow-card-lift: 0 12px 32px rgba(20, 83, 45, 0.14);
+      --cover-grad: linear-gradient(145deg, #0f3d24 0%, #14532d 28%, #166534 52%, #0d9488 78%, #134e4a 100%);
+      --slide-bg: linear-gradient(168deg, #e8fff4 0%, #f0fdf8 22%, #f7fef9 55%, #ecfdf5 100%);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: radial-gradient(ellipse 120% 80% at 50% -20%, #1a3d2e 0%, #0a0f0c 45%, #050807 100%);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+    .deck {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(0.75rem, 2vw, 1.5rem);
+    }
+    .slide {
+      display: none;
+      width: min(1180px, 96vw);
+      aspect-ratio: 16 / 9;
+      max-height: 94vh;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-slide);
+      padding: clamp(1.75rem, 4vw, 3rem);
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Only one slide visible — .slide-shot had display:flex and overrode display:none (bug: many slides in a row) */
+    .slide:not(.active) {
+      display: none !important;
+    }
+    .slide.active {
+      display: flex !important;
+    }
+    .slide.content {
+      background: var(--slide-bg);
+      border: 1px solid rgba(34, 197, 94, 0.22);
+      box-shadow:
+        var(--shadow-slide),
+        inset 0 1px 0 rgba(255, 255, 255, 0.75);
+      overflow-y: auto;
+    }
+    .content-panel {
+      margin-top: 0.5rem;
+      padding: 1rem 1.15rem 1.1rem;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.92) 0%, rgba(236, 253, 245, 0.98) 45%, rgba(209, 250, 229, 0.55) 100%);
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card-lift);
+    }
+    .content-panel ul {
+      margin: 0;
+    }
+    .slide.cover {
+      background: var(--cover-grad);
+      color: #fff;
+      justify-content: center;
+      padding: clamp(2rem, 5vw, 3.5rem);
+    }
+    .slide.cover::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 85% 15%, rgba(255,255,255,0.12) 0%, transparent 45%),
+        radial-gradient(circle at 10% 90%, rgba(20, 83, 45, 0.4) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .slide.cover > * { position: relative; z-index: 1; }
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      margin-bottom: 1.75rem;
+    }
+    .logo-row img {
+      width: 58px;
+      height: 58px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.12);
+      padding: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    .brand-name {
+      font-family: Fraunces, Georgia, serif;
+      font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .slide.cover h1 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: clamp(1.65rem, 4.2vw, 2.85rem);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      max-width: 18ch;
+    }
+    .slide.cover .subtitle {
+      margin-top: 1rem;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-weight: 600;
+      opacity: 0.95;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+    }
+    .slide.cover .tagline {
+      margin-top: 1.25rem;
+      font-size: clamp(0.95rem, 1.7vw, 1.12rem);
+      line-height: 1.55;
+      opacity: 0.92;
+      max-width: 42ch;
+      font-weight: 400;
+    }
+    .slide.cover .meta {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      font-size: 0.9rem;
+      opacity: 0.92;
+      border-top: 1px solid rgba(255,255,255,0.22);
+      line-height: 1.65;
+    }
+    .presenter-badge {
+      display: inline-block;
+      margin-top: 0.75rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .presenter-badge span {
+      opacity: 0.85;
+      font-weight: 500;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+    .slide-num {
+      position: absolute;
+      bottom: 1.25rem;
+      right: 1.5rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--slate-light);
+    }
+    .slide.cover .slide-num {
+      color: rgba(255,255,255,0.45);
+      bottom: 1.5rem;
+    }
+    .slide-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 0.35rem;
+    }
+    .slide.content h2 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: clamp(1.35rem, 2.8vw, 1.95rem);
+      font-weight: 700;
+      color: var(--forest);
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      padding-bottom: 0.65rem;
+      border-bottom: none;
+      background: linear-gradient(90deg, rgba(21, 128, 61, 0.2) 0%, rgba(52, 211, 153, 0.12) 55%, transparent 100%);
+      padding: 0.35rem 0.6rem 0.55rem;
+      margin-left: -0.1rem;
+      margin-right: -0.1rem;
+      border-radius: 10px;
+      border-left: 4px solid #15803d;
+    }
+    .slide.content p,
+    .slide.content li {
+      font-size: clamp(0.92rem, 1.45vw, 1.05rem);
+      line-height: 1.55;
+      color: var(--slate);
+    }
+    .slide.content ul {
+      margin: 0;
+      padding-left: 1.15rem;
+    }
+    .slide.content li {
+      margin-bottom: 0.55rem;
+      padding-left: 0.15rem;
+    }
+    .slide.content li::marker { color: var(--green); }
+    .slide.content strong { color: var(--ink); font-weight: 600; }
+    .lead {
+      font-size: clamp(1rem, 1.6vw, 1.12rem);
+      font-weight: 600;
+      color: #14532d;
+      margin-top: 0.85rem;
+      line-height: 1.45;
+      padding: 0.65rem 0.85rem;
+      background: linear-gradient(90deg, rgba(187, 247, 208, 0.65) 0%, rgba(236, 253, 245, 0.9) 100%);
+      border-radius: 10px;
+      border: 1px solid rgba(52, 211, 153, 0.4);
+    }
+    .quote-bar {
+      margin-top: 1.1rem;
+      padding: 1rem 1.15rem;
+      background: linear-gradient(100deg, rgba(254, 243, 199, 0.75) 0%, rgba(236, 253, 245, 0.95) 55%, rgba(209, 250, 229, 0.5) 100%);
+      border-radius: var(--radius-md);
+      border-left: 4px solid #15803d;
+      box-shadow: 0 4px 16px rgba(21, 128, 61, 0.08);
+      font-size: 0.95rem;
+      font-style: italic;
+      color: #422006;
+      line-height: 1.5;
+    }
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    @media (max-width: 900px) {
+      .three-col { grid-template-columns: 1fr; }
+    }
+    .pillar {
+      border-radius: var(--radius-md);
+      padding: 1.05rem 1.1rem;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      box-shadow: var(--shadow-card-lift);
+      border: 1px solid rgba(52, 211, 153, 0.5);
+      background: linear-gradient(165deg, #ffffff 0%, #ecfdf5 40%, #d1fae5 100%);
+    }
+    .pillar .pillar-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.45rem;
+      color: var(--forest);
+      padding-bottom: 0.35rem;
+      border-bottom: 2px solid rgba(21, 128, 61, 0.2);
+    }
+    .pillar.farmer {
+      background: linear-gradient(168deg, #f0fdf4 0%, #d1fae5 50%, #a7f3d0 100%);
+      border-color: rgba(16, 185, 129, 0.55);
+    }
+    .pillar.farmer .pillar-title { color: #047857; }
+    .pillar.trader {
+      background: linear-gradient(168deg, #ecfdf5 0%, #bbf7d0 45%, #86efac 100%);
+      border-color: rgba(5, 150, 105, 0.5);
+    }
+    .pillar.trader .pillar-title { color: #065f46; }
+    .pillar.admin {
+      background: linear-gradient(168deg, #f7fee7 0%, #ecfdf5 40%, #d1fae5 100%);
+      border-color: rgba(21, 128, 61, 0.45);
+    }
+    .pillar.admin .pillar-title { color: #14532d; }
+    .pillar ul {
+      margin: 0.5rem 0 0 0;
+      padding-left: 1rem;
+      font-size: 0.78rem;
+      line-height: 1.42;
+      color: var(--slate);
+    }
+    .pillar li { margin-bottom: 0.28rem; }
+    .pillar li::marker { color: #15803d; }
+    .pillar.trader li::marker { color: #059669; }
+    .pillar.admin li::marker { color: #166534; }
+    .story-line {
+      font-size: 0.88rem;
+      color: var(--slate);
+      margin-bottom: 0.75rem;
+      line-height: 1.5;
+    }
+    /* Flow */
+    .flow-board {
+      margin-top: 0.45rem;
+      padding: 0.65rem 0.75rem 0.85rem;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(209, 250, 229, 0.35) 100%);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+    }
+    .flow-wrap {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      margin-top: 0.25rem;
+      font-size: 0.62rem;
+    }
+    @media (min-width: 700px) {
+      .flow-wrap { font-size: 0.68rem; }
+    }
+    .flow-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+    .flow-node {
+      padding: 0.45rem 0.75rem;
+      border-radius: 10px;
+      font-weight: 600;
+      text-align: center;
+      line-height: 1.3;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .flow-node.muted { background: #e2e8f0; color: #334155; }
+    .flow-node.role { background: #cbd5e1; color: #1e293b; }
+    .flow-node.f { background: linear-gradient(180deg, #bbf7d0 0%, #86efac 100%); color: #14532d; border: 1px solid rgba(21,128,61,0.2); }
+    .flow-node.t { background: linear-gradient(180deg, #bfdbfe 0%, #93c5fd 100%); color: #1e3a8a; border: 1px solid rgba(37,99,235,0.2); }
+    .flow-node.a { background: linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 100%); color: #0f172a; border: 1px solid rgba(51,65,85,0.2); }
+    .flow-node.chain {
+      background: linear-gradient(180deg, #ddd6fe 0%, #c4b5fd 100%);
+      color: #5b21b6;
+      border: 1px solid rgba(124,58,237,0.25);
+      padding: 0.5rem 1rem;
+    }
+    .flow-node.core { background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; }
+    .flow-arrow {
+      color: var(--slate-light);
+      font-weight: 700;
+      font-size: 1.1em;
+    }
+    .flow-split {
+      display: flex;
+      gap: 0.65rem;
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 0.2rem 0;
+    }
+    .flow-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      min-width: 8rem;
+    }
+    .flow-caption {
+      font-size: 0.65rem;
+      color: var(--slate-light);
+      margin: 0.15rem 0;
+    }
+    /* Slides that prioritize large screenshots */
+    .slide.content.slide-visual {
+      padding: clamp(0.65rem, 1.5vw, 1.15rem);
+    }
+    .slide.content.slide-visual .slide-label {
+      margin-bottom: 0.1rem;
+      font-size: 0.58rem;
+    }
+    .slide.content.slide-visual h2 {
+      margin-bottom: 0.25rem;
+      padding-bottom: 0.3rem;
+      font-size: clamp(1.05rem, 2vw, 1.4rem);
+    }
+    .slide.content.slide-visual .story-line {
+      margin-bottom: 0.25rem;
+      font-size: 0.78rem;
+      line-height: 1.3;
+    }
+    .slide.content.slide-visual .demo-frame .frame-head {
+      padding: 0.28rem 0.45rem;
+      font-size: 0.58rem;
+    }
+    .slide.content.slide-payment ul {
+      margin-top: 0.25rem;
+      margin-bottom: 0.35rem;
+      font-size: 0.88rem;
+    }
+    .slide.content.slide-payment li { margin-bottom: 0.25rem; }
+    /* One screenshot per slide — do NOT set display here (breaks slide hiding) */
+    .slide.content.slide-shot {
+      min-height: 0;
+      padding: clamp(0.55rem, 1.4vw, 1rem);
+      background: linear-gradient(165deg, #f0fdf4 0%, #ecfdf5 40%, #f7fef9 100%);
+      border-color: rgba(52, 211, 153, 0.28);
+    }
+    .slide.content.slide-shot .slide-label {
+      margin-bottom: 0.08rem;
+      font-size: 0.55rem;
+    }
+    .slide.content.slide-shot h2 {
+      font-family: Fraunces, Georgia, serif;
+      margin-bottom: 0.35rem;
+      padding: 0;
+      margin-left: 0;
+      margin-right: 0;
+      border: none;
+      border-bottom: none;
+      background: none;
+      border-left: none;
+      font-size: clamp(1.15rem, 2.1vw, 1.5rem);
+      color: var(--forest);
+    }
+    .slide.content.slide-shot.slide-trust .slide-label {
+      color: #6d28d9;
+    }
+    .slide.content.slide-shot .shot-caption {
+      font-size: 0.78rem;
+      color: var(--slate);
+      margin-bottom: 0.35rem;
+      line-height: 1.35;
+    }
+    .shot-single {
+      flex: 1 1 0;
+      min-height: 0;
+      margin-top: 0.25rem;
+      border-radius: var(--radius-md);
+      overflow: auto;
+      background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%);
+      border: 2px solid rgba(52, 211, 153, 0.55);
+      box-shadow: var(--shadow-card-lift);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .shot-single img {
+      width: 100%;
+      height: auto;
+      max-height: min(74vh, 900px);
+      object-fit: contain;
+      object-position: top center;
+      display: block;
+      background: #f8fafc;
+    }
+    .slide.content.slide-shot.slide-trust .shot-single {
+      background: #faf5ff;
+      border-color: rgba(124, 58, 237, 0.25);
+    }
+    /* Demo frames */
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-top: 0.3rem;
+      flex: 1 1 auto;
+      min-height: 0;
+      align-items: stretch;
+    }
+    /* Half-slide + full-width row = screenshots scale by width (not skinny 3-col) */
+    .demo-grid.demo-grid--large {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+    }
+    .demo-grid.demo-grid--large .demo-frame--span {
+      grid-column: 1 / -1;
+    }
+    @media (max-width: 800px) {
+      .demo-grid { grid-template-columns: 1fr; }
+      .demo-grid.demo-grid--large {
+        grid-template-columns: 1fr;
+      }
+      .demo-grid.demo-grid--large .demo-frame--span {
+        grid-column: auto;
+      }
+    }
+    .demo-frame {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: var(--shadow-card);
+      min-height: 0;
+    }
+    .demo-frame .frame-head {
+      padding: 0.65rem 0.85rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--forest);
+      background: linear-gradient(180deg, var(--green-soft) 0%, #fff 100%);
+      border-bottom: 1px solid rgba(21, 128, 61, 0.12);
+    }
+    .demo-frame .frame-body {
+      flex: 1;
+      min-height: 112px;
+      background:
+        linear-gradient(145deg, rgba(236, 253, 245, 0.5) 0%, rgba(248, 250, 252, 0.9) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .demo-frame .frame-body.has-img {
+      flex: 0 0 auto;
+      padding: 0;
+      background: #e8edf4;
+      display: block;
+      line-height: 0;
+      min-height: 0;
+    }
+    /* Image fills card width; height follows aspect ratio — no huge empty grey card */
+    .demo-frame .frame-body.has-img img {
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+      object-fit: contain;
+      object-position: top left;
+      display: block;
+      background: #f1f5f9;
+    }
+    /* Cap height only so slide fits; width already makes pixels bigger */
+    .demo-grid.demo-grid--large > .demo-frame:not(.demo-frame--span) .frame-body.has-img img {
+      max-height: min(48vh, 560px);
+    }
+    .demo-grid.demo-grid--large .demo-frame--span .frame-body.has-img img {
+      max-height: min(50vh, 640px);
+    }
+    .payment-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+      margin-top: 0.45rem;
+    }
+    @media (max-width: 720px) {
+      .payment-pair { grid-template-columns: 1fr; }
+    }
+    .payment-shot {
+      display: flex;
+      flex-direction: column;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid rgba(124, 58, 237, 0.22);
+      background: #faf5ff;
+      box-shadow: var(--shadow-card);
+    }
+    .payment-shot img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      object-position: top left;
+      max-height: min(54vh, 720px);
+      background: #f1f5f9;
+    }
+    .slide.content.slide-payment h2 {
+      margin-bottom: 0.2rem;
+      padding-bottom: 0.25rem;
+    }
+    .payment-shot figcaption {
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: #6d28d9;
+      padding: 0.4rem 0.6rem;
+      background: rgba(245, 243, 255, 0.95);
+      border-top: 1px solid rgba(196, 181, 253, 0.35);
+    }
+    .frame-placeholder-art {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(21, 128, 61, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+    }
+    .frame-placeholder-art svg {
+      width: 24px;
+      height: 24px;
+      opacity: 0.45;
+      color: var(--green);
+    }
+    .frame-hint {
+      font-size: 0.75rem;
+      color: var(--slate-light);
+      text-align: center;
+      line-height: 1.4;
+      max-width: 22ch;
+    }
+    .nav-hint {
+      position: fixed;
+      bottom: 0.75rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.28);
+      z-index: 10;
+      letter-spacing: 0.04em;
+    }
+    .placeholder-soft {
+      color: var(--slate-light);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <section class="slide cover active" data-slide="1">
+      <span class="slide-num">1 — 14</span>
+      <div class="logo-row">
+        <img src="./logo.png" alt="" />
+        <span class="brand-name">AgriTrack</span>
+      </div>
+      <p class="subtitle">Pitch · April 2026</p>
+      <h1>Remote farm monitoring &amp; financial trust</h1>
+      <p class="tagline">A single place for owners and investors to watch operations and trust what happens with money — from anywhere.</p>
+      <p class="subtitle" style="margin-top:1.5rem;">Powered by Sui</p>
+      <div class="presenter-badge">
+        <span>Presented by</span>
+        Esther Nakungu
+      </div>
+      <div class="meta">
+        Solo project · AgriTrack — remote monitoring &amp; financial trust
+      </div>
+    </section>
+
+    <section class="slide content" data-slide="2">
+      <span class="slide-num">2 — 14</span>
+      <p class="slide-label">Challenge</p>
+      <h2>The problem</h2>
+      <div class="content-panel">
+        <ul>
+          <li><strong>No live picture</strong> of what happens on the farm for people who are not on site.</li>
+          <li><strong>Money is hard to prove</strong> when records are informal or easy to argue about.</li>
+          <li><strong>Remote owners cannot verify</strong> day-to-day work or payments with confidence.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide content" data-slide="3">
+      <span class="slide-num">3 — 14</span>
+      <p class="slide-label">Answer</p>
+      <h2>Our solution</h2>
+      <div class="content-panel">
+        <ul>
+          <li><strong>Live activity</strong> — farmers log what happens as it happens.</li>
+          <li><strong>Clear roles</strong> — farmer, trader, and admin each see what they should.</li>
+          <li><strong>Verifiable payments</strong> — Sui for proof when it matters.</li>
+        </ul>
+        <p class="lead">Monitor operations and trust the money trail from anywhere.</p>
+      </div>
+      <p class="quote-bar">This is not just farm management — it is trusted, verifiable agricultural operations.</p>
+    </section>
+
+    <section class="slide content" data-slide="4">
+      <span class="slide-num">4 — 14</span>
+      <p class="slide-label">Architecture</p>
+      <h2>How it works</h2>
+      <p class="story-line">From field data and sales to on-chain proof and oversight — one connected flow.</p>
+      <div class="flow-board">
+      <div class="flow-wrap">
+        <div class="flow-row">
+          <span class="flow-node muted">Login</span>
+          <span class="flow-arrow">↓</span>
+          <span class="flow-node role">Role identified</span>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-split">
+          <div class="flow-col">
+            <span class="flow-node f">Farmer · input</span>
+            <span class="flow-arrow">↓</span>
+            <span class="flow-node f">Farm logs</span>
+            <span class="flow-arrow">↓</span>
+            <span class="flow-node f">Stock update</span>
+          </div>
+          <div class="flow-col">
+            <span class="flow-node t">Trader · sales</span>
+            <span class="flow-arrow">↓</span>
+            <span class="flow-node t">Sales created</span>
+            <span class="flow-arrow">↓</span>
+            <span class="flow-node t">Payment (Sui)</span>
+          </div>
+          <div class="flow-col">
+            <span class="flow-node a">Admin · watch</span>
+            <span class="flow-arrow">↓</span>
+            <span class="flow-node a">Dashboard</span>
+            <p class="flow-caption">Live view of the system</p>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <span class="flow-node chain">Blockchain transaction</span>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <span class="flow-node core">System updates</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node core">Alerts</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-node core">Admin action</span>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <section class="slide content" data-slide="5">
+      <span class="slide-num">5 — 14</span>
+      <p class="slide-label">Product</p>
+      <h2>What you get</h2>
+      <div class="content-panel">
+        <ul>
+          <li>Daily farm logs with optional photo proof.</li>
+          <li>One dashboard for stock, revenue, and alerts.</li>
+          <li>Sales and credit tracked in one place.</li>
+          <li>Payment verification on Sui when you need proof.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide content slide-shot" data-slide="6">
+      <span class="slide-num">6 — 14</span>
+      <p class="slide-label">Product preview</p>
+      <h2>Admin — full system view</h2>
+      <p class="shot-caption">Users, produce, revenue, and charts in one place for oversight.</p>
+      <div class="shot-single">
+        <img src="./pitch-assets/pitch-admin.png" alt="AgriTrack admin dashboard" />
+      </div>
+    </section>
+
+    <section class="slide content slide-shot" data-slide="7">
+      <span class="slide-num">7 — 14</span>
+      <p class="slide-label">Product preview</p>
+      <h2>Farmer — day-to-day operations</h2>
+      <p class="shot-caption">Harvests, stock, and money received — what happens on the farm.</p>
+      <div class="shot-single">
+        <img src="./pitch-assets/pitch-farmer.png" alt="Farmer workspace in AgriTrack" />
+      </div>
+    </section>
+
+    <section class="slide content slide-shot" data-slide="8">
+      <span class="slide-num">8 — 14</span>
+      <p class="slide-label">Product preview</p>
+      <h2>Trader — sales &amp; payments</h2>
+      <p class="shot-caption">Purchases, amounts in UGX, and a clear purchasing desk.</p>
+      <div class="shot-single">
+        <img src="./pitch-assets/pitch-trader.png" alt="Trader dashboard in AgriTrack" />
+      </div>
+    </section>
+
+    <section class="slide content slide-shot slide-trust" data-slide="9">
+      <span class="slide-num">9 — 14</span>
+      <p class="slide-label">Payments &amp; trust</p>
+      <h2>Wallet on Sui</h2>
+      <p class="shot-caption">Connect a real wallet or use mock SUI for testing — same flow.</p>
+      <div class="shot-single">
+        <img src="./pitch-assets/pitch-wallet-connect.png" alt="Sui wallet screen in AgriTrack" />
+      </div>
+    </section>
+
+    <section class="slide content slide-shot slide-trust" data-slide="10">
+      <span class="slide-num">10 — 14</span>
+      <p class="slide-label">Payments &amp; trust</p>
+      <h2>From chain to ledger</h2>
+      <p class="shot-caption">QR receive, link a payment to a sale, optional escrow — proof end to end.</p>
+      <div class="shot-single">
+        <img src="./pitch-assets/pitch-wallet-escrow.png" alt="QR, link payment, escrow in AgriTrack" />
+      </div>
+    </section>
+
+    <section class="slide content" data-slide="11">
+      <span class="slide-num">11 — 14</span>
+      <p class="slide-label">Outcomes</p>
+      <h2>Impact</h2>
+      <div class="three-col">
+        <div class="pillar farmer">
+          <div class="pillar-title">Farmers</div>
+          <ul>
+            <li>Clearer accountability in the field.</li>
+            <li>A documented trail of work, stock, and harvests.</li>
+            <li>Fewer disputes with buyers over what was sold or delivered.</li>
+            <li>Stronger case for credit, inputs, or programme support.</li>
+          </ul>
+        </div>
+        <div class="pillar trader">
+          <div class="pillar-title">Owners &amp; investors</div>
+          <ul>
+            <li>Confidence from a live, honest picture.</li>
+            <li>Revenue, costs, and alerts without waiting on manual reports.</li>
+            <li>Earlier signals when something drifts off plan.</li>
+            <li>History that boards, donors, or partners can review.</li>
+          </ul>
+        </div>
+        <div class="pillar admin">
+          <div class="pillar-title">Agribusiness</div>
+          <ul>
+            <li>Operations that scale without losing transparency.</li>
+            <li>One standard across many farmers or locations.</li>
+            <li>Roles that match how teams actually work.</li>
+            <li>Better readiness for audits, pilots, and partnerships.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide content" data-slide="12">
+      <span class="slide-num">12 — 14</span>
+      <p class="slide-label">Why now</p>
+      <h2>Why it matters</h2>
+      <div class="content-panel">
+        <ul>
+          <li>Agriculture needs <strong>trust</strong>, not only effort.</li>
+          <li>Clear records reduce <strong>fraud and confusion</strong> around money.</li>
+          <li>Remote ownership only works with <strong>visibility and proof</strong>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide content" data-slide="13">
+      <span class="slide-num">13 — 14</span>
+      <p class="slide-label">Roadmap</p>
+      <h2>Next steps</h2>
+      <div class="content-panel">
+        <ul>
+          <li><strong>Mobile experience</strong> so daily input is effortless.</li>
+          <li><strong>Stronger proof</strong> — location and media where it helps.</li>
+          <li><strong>More rails</strong> — other payment paths alongside Sui.</li>
+          <li><strong>First pilot</strong> with a real partner you name on this slide.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide cover" data-slide="14">
+      <span class="slide-num">14 — 14</span>
+      <h1 style="font-size:clamp(1.5rem,3.8vw,2.35rem);max-width:20ch;">Thank you</h1>
+      <p class="tagline" style="margin-top:1rem;">Trust and transparency for the people who feed us.</p>
+      <div class="presenter-badge" style="margin-top:1.5rem;">
+        <span>Built &amp; presented by</span>
+        Esther Nakungu
+      </div>
+      <div class="meta" style="margin-top:1.75rem;border-top-color: rgba(255,255,255,0.22); text-align:left;">
+        <p style="margin-bottom:0.5rem;">Questions welcome</p>
+        <p style="opacity:0.9;font-size:0.88rem;">Thank you for your time — AgriTrack</p>
+      </div>
+    </section>
+  </div>
+  <p class="nav-hint">Arrows · space · home · end</p>
+  <!--
+    SPEAKER SCRIPT (not shown on screen — open this file in an editor while you rehearse)
+
+    1 — Title: Name AgriTrack; one line on remote monitoring + trust; mention Sui for payments.
+    2 — Problem: No live picture for remote people; money is disputed; owners can’t verify.
+    3 — Solution: Live logs, three roles, Sui when proof matters. Read the quote line slowly.
+    4 — How it works: Walk the flow top to bottom — farmer and trader paths, then chain, then admin.
+    5 — What you get: Four bullets — logs, dashboard, sales/credit, Sui verification.
+    6 — Admin screenshot: “This is the oversight view — totals, revenue, produce split.”
+    7 — Farmer screenshot: “Farmers see their own harvest, stock, and money — not spreadsheets.”
+    8 — Trader screenshot: “Buyers see purchases and amounts — that’s the commercial side.”
+    9 — Wallet screenshot: “Payments can hit Sui — connect or mock for the room.”
+    10 — QR / escrow screenshot: “We can tie a chain payment to a sale — escrow when you need safety.”
+    11 — Impact: Three audiences — farmers, owners, agribusiness — one line each column.
+    12 — Why it matters: Trust sector; less fraud; remote ownership needs proof.
+    13 — Next steps: Mobile, stronger proof, more payment rails, name your pilot partner.
+    14 — Thank you + contact; invite questions.
+  -->
+  <script>
+    (function () {
+      const slides = [...document.querySelectorAll(".slide")];
+      let i = 0;
+      function show(n) {
+        i = Math.max(0, Math.min(n, slides.length - 1));
+        slides.forEach((s, j) => s.classList.toggle("active", j === i));
+      }
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); show(i + 1); }
+        if (e.key === "ArrowLeft") { e.preventDefault(); show(i - 1); }
+        if (e.key === "Home") show(0);
+        if (e.key === "End") show(slides.length - 1);
+      });
+      show(0);
+    })();
+  </script>
+</body>
+</html>

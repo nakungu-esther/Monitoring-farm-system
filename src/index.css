@@ -1,0 +1,39 @@
+@import 'tailwindcss';
+
+/* Dark mode follows `data-color-scheme` on <html> (set in main.jsx + TopBar toggle). */
+@variant dark (&:where([data-color-scheme="dark"] *));
+
+/* App-wide design tokens (Tailwind v4 theme extension) — deeper, calmer greens */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Poppins', var(--font-sans);
+  --color-agri-900: #14532d;
+  --color-agri-800: #166534;
+  --color-agri-700: #15803d;
+  --color-agri-muted: #64748b;
+  --color-agri-surface: #ffffff;
+  --color-agri-bg: #f1f5f4;
+  --color-hub-green: #166534;
+  --color-hub-green-dark: #14532d;
+  --color-hub-green-soft: #dcfce7;
+}
+
+/* Natural page scroll (window) so long dashboards and forms always scroll reliably.
+   Overflow was previously trapped in an inner flex region, which could clip content without scroll. */
+html {
+  height: auto;
+  min-height: 100%;
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}

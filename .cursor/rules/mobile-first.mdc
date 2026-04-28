@@ -1,0 +1,14 @@
+---
+description: AgriTrack is used primarily on phones; design and auth flows should default to mobile.
+alwaysApply: true
+---
+
+# Mobile-first (phones are the default device)
+
+- **Phone (narrow, touch)** is the default layout; **desktop** is an enhancement, not the primary target.
+- **Touch targets** for primary actions, links, and icon buttons: aim for at least **~44×44px**; avoid small tap areas.
+- **Do not rely on hover** for essential actions; ensure controls are discoverable and usable on touch.
+- **Forms and auth** (login, sign-up, forgot/reset password, farm flows): full-width fields, large buttons, readable type; test at **~360px** width and with the **on-screen keyboard** (avoid hiding critical actions behind the keyboard where possible).
+- **Password reset links** are often opened **on the same phone** (email app → browser): production **`APP_PUBLIC_URL`** must be the real HTTPS app URL so the link lands on your SPA. Prefer a single, stable site URL for the web app and PWA.
+- **Notched / home-indicator devices**: where content meets screen edges, consider **`env(safe-area-inset-*)`** so buttons are not under the system UI.
+- **Network**: many users are on poor or intermittent connectivity; keep flows tolerant of **offline / retry** patterns already in the app.
