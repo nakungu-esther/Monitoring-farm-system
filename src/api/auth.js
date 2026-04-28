@@ -26,12 +26,31 @@ export function setStoredToken(token) {
   }
 }
 
+/** Readable axios failure text (Nest often sends `{ message: 'Internal server error' }`; URL hint helps find which route broke). */
 export function apiErrorMessage(err) {
+  let url = '';
+  try {
+    const raw = err.config?.url ?? '';
+    const qs = err.config?.params ? String(new URLSearchParams(err.config.params)) : '';
+    if (typeof raw === 'string' && raw.length > 0) {
+      url =
+        raw.includes('://') ? raw.replace(/^https?:\/\/[^/]+/i, '') : raw;
+      if (qs) url += (url.includes('?') ? '&' : '?') + qs;
+      url = `[${url}] `;
+    }
+  } catch {
+    /* ignore */
+  }
   const d = err.response?.data;
-  if (!d) return err.message || 'Request failed';
-  if (Array.isArray(d.message)) return d.message.join(' ');
-  if (typeof d.message === 'string') return d.message;
-  return d.error || 'Request failed';
+  let body = err.message || 'Request failed';
+  if (d) {
+    if (Array.isArray(d.message)) body = d.message.join(' ');
+    else if (typeof d.message === 'string') body = d.message;
+    else body = d.error || body;
+  }
+  const status = err.response?.status;
+  const st = typeof status === 'number' ? ` (${status})` : '';
+  return `${url}${body}${st}`;
 }
 
 export async function apiLogin(email, password) {

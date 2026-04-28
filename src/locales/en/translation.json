@@ -267,6 +267,7 @@
     "offlineQuick": "Choosing a role fills email and password, or use your own offline account.",
     "quickLoginApiHint": "Tap Farmer or Trader to prefill sign-in fields. Those accounts must exist on your API (for example seed locally). Use the same passwords as in the app docs.",
     "productionSignIn": "Sign in with the email and password from your organization. Only farmer and trader accounts are created through this app.",
+    "sessionExpiredBanner": "Your sign-in expired or is not valid. Sign in again to continue.",
     "joinAs": "I want to join as",
     "farmer": "Farmer",
     "trader": "Trader",

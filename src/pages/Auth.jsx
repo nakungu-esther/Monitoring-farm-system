@@ -184,7 +184,7 @@ export default function Auth() {
           className="border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950"
           role="status"
         >
-          Your session ended or was not valid. Please sign in again.
+          {t('auth.sessionExpiredBanner')}
         </div>
       ) : null}
       <div className="grid min-h-full lg:grid-cols-2">

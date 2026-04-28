@@ -422,12 +422,14 @@ function mergeFarmDailyLogsFromApi(previous, apiRows) {
   return [...fromApi, ...localOnly];
 }
 
-async function optionalApi404(fn) {
+/** Routes that are not required for harvest/sale sync: failures must not block dashboard (log in dev). */
+async function optionalSidecarApi(fn, label) {
   try {
     return await fn();
   } catch (e) {
-    if (e.response?.status === 404) return null;
-    throw e;
+    // eslint-disable-next-line no-console
+    console.warn(`[AgriTrack] optional sync skipped (${label}):`, apiErrorMessage(e));
+    return null;
   }
 }
 
@@ -491,13 +493,13 @@ export function AgriTrackProvider({ children }) {
         await Promise.all([
           fetchProcurements(),
           fetchSales(),
-          optionalApi404(() => fetchFarms()),
-          optionalApi404(() => fetchExpenses()),
-          optionalApi404(() => fetchSeasonalPlans()),
-          optionalApi404(() => fetchSupplyChainEvents()),
-          optionalApi404(() => fetchNotificationReadKeys()),
-          optionalApi404(() => fetchSmsLogs()),
-          optionalApi404(() => fetchFarmDailyLogs()),
+          optionalSidecarApi(() => fetchFarms(), 'farms'),
+          optionalSidecarApi(() => fetchExpenses(), 'expenses'),
+          optionalSidecarApi(() => fetchSeasonalPlans(), 'seasonalPlans'),
+          optionalSidecarApi(() => fetchSupplyChainEvents(), 'supplyChain'),
+          optionalSidecarApi(() => fetchNotificationReadKeys(), 'notifications'),
+          optionalSidecarApi(() => fetchSmsLogs(), 'sms'),
+          optionalSidecarApi(() => fetchFarmDailyLogs(), 'farmDailyLogs'),
         ]);
       setState((s) => ({
         ...s,
