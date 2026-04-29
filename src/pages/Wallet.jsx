@@ -235,9 +235,26 @@ export default function Wallet() {
         {networkLead}
       </p>
 
-      <section className="panel card-like" style={{ marginBottom: '1.5rem' }}>
+      <section className="panel card-like" style={{ marginBottom: '1rem' }}>
+        <h2 className="panel-heading">Simple wallet guide</h2>
+        <p className="small muted" style={{ marginTop: '-0.35rem' }}>
+          Follow these 3 steps: connect wallet, choose payment action, then check history.
+        </p>
+        <ol className="small" style={{ margin: '0.75rem 0 0.25rem 1rem', lineHeight: 1.7 }}>
+          <li>Connect wallet first.</li>
+          <li>Send, receive, or pay a farmer.</li>
+          <li>Confirm result in Activity history.</li>
+        </ol>
+        <div className="inline-tools wrap" style={{ marginTop: '0.75rem' }}>
+          <a href="#wallet-connect" className="btn-secondary">1) Connect</a>
+          <a href="#wallet-actions" className="btn-secondary">2) Actions</a>
+          <a href="#wallet-history" className="btn-secondary">3) History</a>
+        </div>
+      </section>
+
+      <section id="wallet-connect" className="panel card-like" style={{ marginBottom: '1.5rem' }}>
         <h2 className="panel-heading">
-          Sui —
+          Real wallet connection —
           {suiNet}
         </h2>
         <p className="muted small">
@@ -341,10 +358,10 @@ export default function Wallet() {
 
         {currentUser?.role === 'trader' && payables.length > 0 ? (
           <div style={{ marginTop: '1.25rem', borderTop: '1px solid var(--border, #e2e8f0)', paddingTop: '1rem' }}>
-            <h3 className="panel-heading sm">Pay farmer on-chain (trader)</h3>
+            <h3 className="panel-heading sm">Pay farmer from wallet (trader)</h3>
             <p className="muted small">
-              Choose an open credit line. The farmer’s <strong>Sui address</strong> comes from their Profile. After the
-              tx succeeds, we save the <strong>digest</strong> and mark the sale <strong>paid</strong> in UGX on your ledger.
+              Choose an unpaid sale, enter amount, then confirm payment.
+              After payment succeeds, the sale is marked paid on the ledger.
             </p>
             <div className="inline-tools" style={{ marginTop: '0.5rem', flexWrap: 'wrap' }}>
               <select
@@ -379,7 +396,7 @@ export default function Wallet() {
                 disabled={!walletConn.isConnected || devPayBusy}
                 onClick={() => onDevnetPayFarmer()}
               >
-                {devPayBusy ? 'Signing…' : `Sign & pay (${suiNet})`}
+                {devPayBusy ? 'Confirming…' : `Pay now (${suiNet})`}
               </button>
             </div>
           </div>
@@ -412,9 +429,9 @@ export default function Wallet() {
         </div>
       </section>
 
-      <h2 className="panel-heading">Mock wallet (offline)</h2>
+      <h2 id="wallet-actions" className="panel-heading">Mock wallet (offline mode)</h2>
       <p className="muted small" style={{ marginBottom: '1rem' }}>
-        In-app balances only — not on-chain. For use without a browser extension.
+        Easy mode: use this when internet or browser wallet is not available.
       </p>
 
       {!wallet.connected ? (
@@ -458,33 +475,36 @@ export default function Wallet() {
                 <Copy className="size-4" strokeWidth={2} aria-hidden />
               </button>
             </div>
-            <div className="wallet-actions-row flex flex-wrap items-center gap-1">
+            <div className="wallet-actions-row flex flex-wrap items-center gap-2">
               <button
                 type="button"
-                className="btn-wallet send inline-flex items-center justify-center gap-1.5"
-                title="Send"
-                aria-label="Send"
+                className="btn-wallet send inline-flex min-h-11 items-center justify-center gap-2 px-3"
+                title="Send money"
+                aria-label="Send money"
                 onClick={() => setSendOpen(true)}
               >
                 <Send className="size-4 shrink-0" strokeWidth={2} aria-hidden />
+                Send money
               </button>
               <button
                 type="button"
-                className="btn-wallet recv inline-flex items-center justify-center gap-1.5"
-                title="Receive"
-                aria-label="Receive"
+                className="btn-wallet recv inline-flex min-h-11 items-center justify-center gap-2 px-3"
+                title="Receive money"
+                aria-label="Receive money"
                 onClick={() => setRecvOpen(true)}
               >
                 <Inbox className="size-4 shrink-0" strokeWidth={2} aria-hidden />
+                Receive money
               </button>
               <button
                 type="button"
-                className="btn-ghost inline-flex items-center justify-center p-1.5"
+                className="btn-ghost inline-flex min-h-11 items-center justify-center gap-2 px-3"
                 title="Disconnect"
                 aria-label="Disconnect"
                 onClick={() => { disconnectWallet(); toast('Disconnected'); }}
               >
                 <Unplug className="size-4" strokeWidth={2} aria-hidden />
+                Disconnect
               </button>
             </div>
           </div>
@@ -603,7 +623,7 @@ export default function Wallet() {
         </div>
       </section>
 
-      <section className="panel">
+      <section id="wallet-history" className="panel">
         <h3 className="panel-heading sm">Activity</h3>
         <div className="table-wrap">
           <table className="data-table striped">

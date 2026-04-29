@@ -40,7 +40,7 @@ body {
 
 /* Global light-green button theme */
 :root {
-  --app-light-green: #16a34a;
+  --app-light-green: #22c55e;
   --app-light-green-hover: #16a34a;
   --app-light-green-soft: #dcfce7;
 }
@@ -75,9 +75,11 @@ input.hover\:bg-emerald-800:hover {
 .text-emerald-700,
 .text-emerald-800,
 .text-emerald-900,
+.text-emerald-600,
 .hover\:text-emerald-700:hover,
+.hover\:text-emerald-600:hover,
 .hover\:text-emerald-800:hover {
-  color: var(--app-light-green-hover) !important;
+  color: var(--app-light-green) !important;
 }
 
 .border-emerald-200,
@@ -96,7 +98,7 @@ input.hover\:bg-emerald-800:hover {
 /* Auth hero background requested style */
 .hero {
   background:
-    linear-gradient(rgba(0, 128, 0, 0.6), rgba(0, 128, 0, 0.6)),
+    linear-gradient(rgba(0, 128, 0, 0.22), rgba(0, 128, 0, 0.22)),
     url('/login-farm-bg.png');
   background-size: cover;
   background-position: center;
@@ -105,5 +107,5 @@ input.hover\:bg-emerald-800:hover {
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 128, 0, 0.6);
+  background: rgba(0, 128, 0, 0.14);
 }

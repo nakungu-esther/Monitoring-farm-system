@@ -268,7 +268,7 @@ export default function Auth() {
                             onClick={() => applyQuickAccount(id)}
                             className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2.5 text-xs font-semibold transition-all sm:text-sm ${
                               quickAccountRole === id
-                                ? 'bg-white text-emerald-600 shadow-sm ring-1 ring-zinc-200/80'
+                                ? 'bg-[#ecfdf3] text-[#22c55e] shadow-sm ring-1 ring-[#d1d5db]'
                                 : 'text-zinc-600 hover:text-zinc-900'
                             }`}
                           >
@@ -295,7 +295,7 @@ export default function Auth() {
                         value={loginForm.identifier}
                         onChange={(e) => setLoginForm((f) => ({ ...f, identifier: e.target.value }))}
                         placeholder={t('auth.placeholderEmail')}
-                        className="w-full rounded-xl border border-[#e3e7ee] bg-[#f2f4f7] py-3 pl-11 pr-4 text-zinc-900 outline-none ring-[#22c55e]/0 transition placeholder:text-zinc-400 focus:border-[#22c55e] focus:bg-white focus:ring-4 focus:ring-[#22c55e]/20 disabled:bg-zinc-100 disabled:opacity-90"
+                        className="w-full rounded-xl border border-[#d1d5db] bg-white py-3 pl-11 pr-4 text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-[#22c55e] focus:ring-4 focus:ring-[#22c55e]/15 disabled:bg-zinc-100 disabled:opacity-90"
                       />
                     </div>
                   </label>
@@ -325,7 +325,7 @@ export default function Auth() {
                     type="submit"
                     disabled={loginBusy}
                     aria-busy={loginBusy}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1fb05f] py-3.5 text-sm font-bold text-white shadow-lg shadow-[#1fb05f]/30 transition hover:bg-[#16954f] disabled:pointer-events-none disabled:opacity-80"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#22c55e] py-3.5 text-sm font-bold text-white shadow-lg shadow-[#22c55e]/30 transition hover:bg-[#16a34a] disabled:pointer-events-none disabled:opacity-80"
                   >
                     {loginBusy ? (
                       <>
@@ -361,7 +361,7 @@ export default function Auth() {
                       onClick={() => setRegForm((f) => ({ ...f, role: 'farmer' }))}
                       className={`flex flex-col items-center gap-2 rounded-2xl border-2 py-5 transition ${
                         regForm.role === 'farmer'
-                          ? 'border-emerald-500 bg-emerald-50 text-emerald-900'
+                          ? 'border-[#22c55e] bg-[#ecfdf3] text-[#16a34a]'
                           : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300'
                       }`}
                     >
@@ -373,7 +373,7 @@ export default function Auth() {
                       onClick={() => setRegForm((f) => ({ ...f, role: 'trader' }))}
                       className={`flex flex-col items-center gap-2 rounded-2xl border-2 py-5 transition ${
                         regForm.role === 'trader'
-                          ? 'border-emerald-500 bg-emerald-50 text-emerald-900'
+                          ? 'border-[#22c55e] bg-[#ecfdf3] text-[#16a34a]'
                           : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300'
                       }`}
                     >
@@ -391,7 +391,7 @@ export default function Auth() {
                       value={regForm.name}
                       onChange={(e) => setRegForm((f) => ({ ...f, name: e.target.value }))}
                       placeholder={t('auth.placeholderName')}
-                      className="w-full rounded-xl border border-zinc-200 bg-zinc-50/80 py-3 pl-11 pr-4 outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-4 focus:ring-emerald-500/15"
+                      className="w-full rounded-xl border border-[#d1d5db] bg-white py-3 pl-11 pr-4 outline-none transition focus:border-[#22c55e] focus:ring-4 focus:ring-[#22c55e]/15"
                     />
                   </div>
                 </label>
@@ -401,7 +401,7 @@ export default function Auth() {
                     value={regForm.phone}
                     onChange={(e) => setRegForm((f) => ({ ...f, phone: e.target.value }))}
                     placeholder={t('auth.placeholderPhone')}
-                    className="w-full rounded-xl border border-zinc-200 bg-zinc-50/80 py-3 px-4 outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-4 focus:ring-emerald-500/15"
+                    className="w-full rounded-xl border border-[#d1d5db] bg-white py-3 px-4 outline-none transition focus:border-[#22c55e] focus:ring-4 focus:ring-[#22c55e]/15"
                     inputMode="tel"
                   />
                 </label>
@@ -411,7 +411,7 @@ export default function Auth() {
                     value={regForm.location}
                     onChange={(e) => setRegForm((f) => ({ ...f, location: e.target.value }))}
                     placeholder={t('auth.placeholderLocation')}
-                    className="w-full rounded-xl border border-zinc-200 bg-zinc-50/80 py-3 px-4 outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-4 focus:ring-emerald-500/15"
+                    className="w-full rounded-xl border border-[#d1d5db] bg-white py-3 px-4 outline-none transition focus:border-[#22c55e] focus:ring-4 focus:ring-[#22c55e]/15"
                   />
                 </label>
                 <label className="block">
@@ -425,7 +425,7 @@ export default function Auth() {
                       value={regForm.email}
                       onChange={(e) => setRegForm((f) => ({ ...f, email: e.target.value }))}
                       placeholder={t('auth.placeholderEmail')}
-                      className="w-full rounded-xl border border-[#e3e7ee] bg-[#f2f4f7] py-3 pl-11 pr-4 outline-none transition focus:border-[#22c55e] focus:bg-white focus:ring-4 focus:ring-[#22c55e]/20"
+                      className="w-full rounded-xl border border-[#d1d5db] bg-white py-3 pl-11 pr-4 outline-none transition focus:border-[#22c55e] focus:ring-4 focus:ring-[#22c55e]/15"
                     />
                   </div>
                 </label>
@@ -466,7 +466,7 @@ export default function Auth() {
 
                 <button
                   type="submit"
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1fb05f] py-3.5 text-sm font-bold text-white shadow-lg shadow-[#1fb05f]/30 transition hover:bg-[#16954f]"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#22c55e] py-3.5 text-sm font-bold text-white shadow-lg shadow-[#22c55e]/30 transition hover:bg-[#16a34a]"
                 >
                   {t('auth.createBtn')}
                   <ArrowRight className="size-4" aria-hidden />

@@ -820,7 +820,9 @@ export function AgriTrackProvider({ children }) {
             users: mergeUsers(s.users, user),
             currentUserId: user.id,
           }));
-          await refreshFromApi();
+          // Do not block login UX on full data sync.
+          // Navigate immediately, then refresh heavy datasets in background.
+          void refreshFromApi().catch(() => {});
           return { ok: true };
         } catch (e) {
           if (isLikelyNetworkError(e)) {
