@@ -298,11 +298,6 @@ export default function Profile() {
               <div>
                 <h3 className="font-semibold text-slate-900">{t('profilePage.securityTitle')}</h3>
                 <p className="mt-1 text-sm text-slate-600">{t('profilePage.securityLead')}</p>
-                {isAdmin ? (
-                  <Link to="/admin" className="mt-3 inline-flex text-sm font-semibold text-emerald-700 hover:underline">
-                    {t('profilePage.openDirectory')}
-                  </Link>
-                ) : null}
               </div>
             </div>
           </section>
