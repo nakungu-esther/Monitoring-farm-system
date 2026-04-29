@@ -304,113 +304,131 @@ export default function Sales() {
       </div>
 
       <Modal title={t('salesPage.modalTitle')} isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <form onSubmit={onSubmit} className="modal-form" noValidate>
-          <label className="auth-field">
-            <span className="auth-label">{t('salesPage.buyerName')}</span>
-            <input name="buyerName" value={form.buyerName} onChange={onChange} />
-          </label>
-          <label className="auth-field">
-            <span className="auth-label">{t('salesPage.filterProduce')}</span>
-            <select value={producePick} onChange={(e) => setProducePick(e.target.value)}>
-              {PRODUCE_OPTIONS.map((p) => (
-                <option key={p} value={p}>{p}</option>
-              ))}
-            </select>
-          </label>
-          {producePick === 'Other' ? (
-            <label className="auth-field">
-              <span className="auth-label">{t('salesPage.customProduce')}</span>
-              <input value={customProduce} onChange={(e) => setCustomProduce(e.target.value)} />
+        <form onSubmit={onSubmit} className="space-y-4" noValidate>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block sm:col-span-2">
+              <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">{t('salesPage.buyerName')}</span>
+              <input
+                name="buyerName"
+                value={form.buyerName}
+                onChange={onChange}
+                className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15"
+              />
             </label>
-          ) : null}
-          {availToSell != null && produceName ? (
-            <p
-              className={`small ${availToSell < 0.01 ? 'text-amber-800' : 'muted'}`}
-              style={{ margin: '-0.25rem 0 0' }}
-            >
-              <strong>{t('salesPage.availToSell')}</strong> {availToSell.toFixed(2)} {t('salesPage.tOf')} {produceName}
-              {availToSell < 2 && availToSell >= 0 ? t('salesPage.lowStockWarn') : ''}
-            </p>
-          ) : null}
-          <label className="auth-field">
-            <span className="auth-label">{t('salesPage.thTonnage')}</span>
-            <input name="tonnage" type="number" step="0.01" value={form.tonnage} onChange={onChange} />
-          </label>
-          <label className="auth-field">
-            <span className="auth-label">{t('salesPage.amountUgx')}</span>
-            <input name="totalPayment" type="number" value={form.totalPayment} onChange={onChange} />
-          </label>
-          <label className="auth-field">
-            <span className="auth-label">{t('salesPage.paymentStatusLbl')}</span>
-            <select name="paymentStatus" value={form.paymentStatus} onChange={onChange}>
-              <option value="paid">{t('saleStatus.paid')}</option>
-              <option value="partial">{t('saleStatus.partial')}</option>
-              <option value="credit">{t('saleStatus.credit')}</option>
-            </select>
-          </label>
-          {showPartialFields ? (
-            <>
-              <p className="small text-slate-600" style={{ margin: '0 0 0.5rem' }}>
-                {t('salesPage.creditRuleBlock', { max: MAX_CREDIT_UGX.toLocaleString() })}
-              </p>
-              <label className="auth-field">
-                <span className="auth-label">{t('salesPage.paidSoFar')}</span>
-                <input name="amountPaid" type="number" value={form.amountPaid} onChange={onChange} />
+            <label className="block">
+              <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">{t('salesPage.filterProduce')}</span>
+              <select
+                value={producePick}
+                onChange={(e) => setProducePick(e.target.value)}
+                className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15"
+              >
+                {PRODUCE_OPTIONS.map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+            </label>
+            {producePick === 'Other' ? (
+              <label className="block">
+                <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">{t('salesPage.customProduce')}</span>
+                <input
+                  value={customProduce}
+                  onChange={(e) => setCustomProduce(e.target.value)}
+                  className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15"
+                />
               </label>
-              <label className="auth-field">
-                <span className="auth-label">{t('salesPage.dueDate')}</span>
-                <input name="creditDueDate" type="date" value={form.creditDueDate} onChange={onChange} />
-              </label>
-            </>
-          ) : null}
+            ) : (
+              <div className="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-xs text-slate-600">
+                {availToSell != null && produceName ? (
+                  <>
+                    <strong>{t('salesPage.availToSell')}</strong> {availToSell.toFixed(2)} {t('salesPage.tOf')} {produceName}
+                  </>
+                ) : 'Select produce to see available stock.'}
+              </div>
+            )}
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block">
+              <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">{t('salesPage.thTonnage')}</span>
+              <input name="tonnage" type="number" step="0.01" value={form.tonnage} onChange={onChange} className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15" />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">{t('salesPage.amountUgx')}</span>
+              <input name="totalPayment" type="number" value={form.totalPayment} onChange={onChange} className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15" />
+            </label>
+          </div>
+
+          <div className="rounded-xl border border-slate-200 bg-white p-3">
+            <label className="block">
+              <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">{t('salesPage.paymentStatusLbl')}</span>
+              <select name="paymentStatus" value={form.paymentStatus} onChange={onChange} className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15">
+                <option value="paid">{t('saleStatus.paid')}</option>
+                <option value="partial">{t('saleStatus.partial')}</option>
+                <option value="credit">{t('saleStatus.credit')}</option>
+              </select>
+            </label>
+            {showPartialFields ? (
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <label className="block">
+                  <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">{t('salesPage.paidSoFar')}</span>
+                  <input name="amountPaid" type="number" value={form.amountPaid} onChange={onChange} className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15" />
+                </label>
+                <label className="block">
+                  <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">{t('salesPage.dueDate')}</span>
+                  <input name="creditDueDate" type="date" value={form.creditDueDate} onChange={onChange} className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15" />
+                </label>
+                <p className="sm:col-span-2 text-xs text-slate-600">
+                  {t('salesPage.creditRuleBlock', { max: MAX_CREDIT_UGX.toLocaleString() })}
+                </p>
+              </div>
+            ) : null}
+          </div>
+
           {form.paymentStatus !== 'credit' ? (
-            <>
-              <p className="small text-slate-600" style={{ margin: '0 0 0.5rem' }}>
-                {t('salesPage.digitalMomoNote')}
-              </p>
-              <label className="auth-field">
-                <span className="auth-label">{t('salesPage.momoProvider')}</span>
-                <select
-                  name="paymentProvider"
-                  value={form.paymentProvider}
-                  onChange={onChange}
-                >
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="block">
+                <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">{t('salesPage.momoProvider')}</span>
+                <select name="paymentProvider" value={form.paymentProvider} onChange={onChange} className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15">
                   <option value="mtn_momo">MTN MoMo</option>
                   <option value="airtel_money">Airtel Money</option>
                   <option value="other">{t('salesPage.momoOther')}</option>
                 </select>
               </label>
-              <label className="auth-field">
-                <span className="auth-label">{t('salesPage.momoRef')}</span>
-                <input
-                  name="paymentReference"
-                  value={form.paymentReference}
-                  onChange={onChange}
-                  placeholder={t('salesPage.momoRefPh')}
-                />
+              <label className="block">
+                <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">{t('salesPage.momoRef')}</span>
+                <input name="paymentReference" value={form.paymentReference} onChange={onChange} placeholder={t('salesPage.momoRefPh')} className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15" />
               </label>
-            </>
+            </div>
           ) : null}
-          <label className="auth-field">
-            <span className="auth-label">{t('salesPage.saleDate')}</span>
-            <input name="date" type="date" value={form.date} onChange={onChange} />
-          </label>
-          <label className="auth-field">
-            <span className="auth-label">{t('salesPage.mockSui')}</span>
-            <input
-              name="mockSuiAmount"
-              type="number"
-              step="0.01"
-              value={form.mockSuiAmount}
-              onChange={onChange}
-              placeholder={wallet.connected ? t('salesPage.phLink') : t('salesPage.phWallet')}
-              disabled={!wallet.connected}
-            />
-            <span className="text-xs text-slate-500">{t('salesPage.mockSuiNote')}</span>
-          </label>
-          <div className="modal-actions">
-            <button type="button" className="btn-secondary" onClick={() => setModalOpen(false)}>{t('common.cancel')}</button>
-            <button type="submit" className="btn-primary">{t('salesPage.saveSale')}</button>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block">
+              <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">{t('salesPage.saleDate')}</span>
+              <input name="date" type="date" value={form.date} onChange={onChange} className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15" />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">{t('salesPage.mockSui')}</span>
+              <input
+                name="mockSuiAmount"
+                type="number"
+                step="0.01"
+                value={form.mockSuiAmount}
+                onChange={onChange}
+                placeholder={wallet.connected ? t('salesPage.phLink') : t('salesPage.phWallet')}
+                disabled={!wallet.connected}
+                className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15 disabled:opacity-60"
+              />
+              <span className="mt-1 block text-xs text-slate-500">{t('salesPage.mockSuiNote')}</span>
+            </label>
+          </div>
+
+          <div className="flex flex-wrap justify-end gap-2 border-t border-slate-100 pt-3">
+            <button type="button" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50" onClick={() => setModalOpen(false)}>
+              {t('common.cancel')}
+            </button>
+            <button type="submit" className="inline-flex min-h-11 items-center justify-center rounded-xl bg-emerald-700 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-800">
+              {t('salesPage.saveSale')}
+            </button>
           </div>
         </form>
       </Modal>

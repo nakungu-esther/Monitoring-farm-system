@@ -3,7 +3,7 @@ import { NavLink, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAgriTrack } from '../context/AgriTrackContext';
 import { getNavForRole, Bell } from '../config/navConfig';
-import { Sparkles } from 'lucide-react';
+import { BriefcaseBusiness } from 'lucide-react';
 
 function cn(...parts) {
   return parts.filter(Boolean).join(' ');
@@ -80,7 +80,7 @@ export default function Sidebar({ mobileOpen = false, onNavigate }) {
       <div className="border-t border-zinc-200/80 p-3">
         <div className="rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 p-4 text-white shadow-lg shadow-emerald-600/20">
           <div className="flex items-center gap-2 text-sm font-bold">
-            <Sparkles className="size-4 shrink-0 opacity-90" aria-hidden />
+            <BriefcaseBusiness className="size-4 shrink-0 opacity-90" aria-hidden />
             {t('sidebar.proInsight')}
           </div>
           <p className="mt-1 text-xs text-white/90">{t('sidebar.proInsightBody')}</p>

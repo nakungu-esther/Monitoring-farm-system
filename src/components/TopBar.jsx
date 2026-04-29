@@ -78,7 +78,7 @@ export default function TopBar({ title, subtitle, onMenuClick, menuOpen = false 
             </button>
           ) : null}
 
-          <form onSubmit={onSearch} className="relative hidden min-w-0 flex-1 lg:block">
+          <form onSubmit={onSearch} className="relative hidden min-w-0 lg:block lg:w-[14rem] xl:w-[18rem]">
             <SearchField
               id="header-search-desktop"
               value={q}
@@ -97,12 +97,12 @@ export default function TopBar({ title, subtitle, onMenuClick, menuOpen = false 
             ) : null}
           </div>
 
-          <div className="ml-auto flex shrink-0 flex-wrap items-center justify-end gap-2">
+          <div className="ml-auto flex shrink-0 items-center justify-end gap-1.5 sm:gap-2">
             {apiEnabled ? (
               <button
                 type="button"
                 className={cn(
-                  'rounded-full px-2.5 py-1 text-xs font-semibold',
+                  'hidden rounded-full px-2.5 py-1 text-xs font-semibold xl:inline-flex',
                   apiStatus.error
                     ? 'bg-amber-100 text-amber-900 dark:bg-amber-950/50 dark:text-amber-200'
                     : 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200',
@@ -117,7 +117,9 @@ export default function TopBar({ title, subtitle, onMenuClick, menuOpen = false 
                 {apiStatus.loading ? t('topbar.syncing') : apiStatus.error ? t('topbar.apiError') : t('topbar.synced')}
               </button>
             ) : null}
-            <LanguageSwitcher />
+            <div className="min-w-[9.75rem] shrink-0">
+              <LanguageSwitcher />
+            </div>
             <button
               type="button"
               onClick={() => {
@@ -144,7 +146,7 @@ export default function TopBar({ title, subtitle, onMenuClick, menuOpen = false 
             </Link>
             <Link
               to="/profile"
-              className="hidden items-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 py-1.5 pl-1.5 pr-3 text-zinc-800 transition hover:border-emerald-300 hover:bg-emerald-50/90 sm:flex dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-emerald-800 dark:hover:bg-emerald-950/40"
+              className="hidden items-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 py-1.5 pl-1.5 pr-3 text-zinc-800 transition hover:border-emerald-300 hover:bg-emerald-50/90 lg:flex dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-emerald-800 dark:hover:bg-emerald-950/40"
               title={currentUser?.profile?.name ? `${t('topbar.profile')} — ${currentUser.profile.name}` : t('topbar.profile')}
             >
               <span className="flex size-8 items-center justify-center rounded-lg bg-emerald-100 text-sm font-bold text-emerald-900 dark:bg-emerald-900/50 dark:text-emerald-100">
@@ -154,7 +156,7 @@ export default function TopBar({ title, subtitle, onMenuClick, menuOpen = false 
             </Link>
             <Link
               to="/profile"
-              className="flex size-10 items-center justify-center rounded-xl border border-zinc-200 bg-zinc-50 text-zinc-700 sm:hidden dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
+              className="flex size-10 items-center justify-center rounded-xl border border-zinc-200 bg-zinc-50 text-zinc-700 lg:hidden dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
               aria-label={t('topbar.profile')}
             >
               <User className="size-5" strokeWidth={2} />

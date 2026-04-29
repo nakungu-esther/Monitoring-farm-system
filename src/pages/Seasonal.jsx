@@ -8,7 +8,7 @@ import EmptyState from '../components/EmptyState';
 import { PRODUCE_OPTIONS, resolveProduceOption } from '../constants/produce';
 import FarmerWeatherCard from '../components/FarmerWeatherCard';
 import { isNonEmptyTrimmed, isValidIsoDateString } from '../utils/authValidation';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, CalendarClock, Sprout } from 'lucide-react';
 
 function initForm() {
   return {
@@ -126,15 +126,23 @@ export default function Seasonal() {
   const farmLabel = (id) => visibleFarms.find((f) => f.id === id)?.name || '—';
 
   return (
-    <div className="page">
-      <div className="page-actions">
-        <p className="page-lead muted" style={{ margin: 0, flex: 1 }}>
-          Planting and harvest windows move AgriTrack from recording to decision support.
-        </p>
-        <button type="button" className="btn-primary" onClick={openAdd}>
+    <div className="mx-auto max-w-7xl space-y-5">
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+              <CalendarClock className="size-5 text-emerald-700" aria-hidden />
+              Seasonal planning
+            </h1>
+            <p className="mt-1 text-sm text-slate-600">
+              Planting and harvest windows for operational planning and reminders.
+            </p>
+          </div>
+          <button type="button" className="inline-flex min-h-11 items-center rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-800" onClick={openAdd}>
           {t('seasonalPage.addPlan')}
-        </button>
-      </div>
+          </button>
+        </div>
+      </section>
 
       {currentUser?.role === 'farmer' ? (
         <section id="season-weather" className="mb-8" aria-label={t('farmerWeather.title')}>
@@ -151,33 +159,36 @@ export default function Seasonal() {
       ) : null}
 
       {seasonalReminders.length > 0 ? (
-        <section className="panel panel-compact">
-          <h2 className="panel-heading">Upcoming reminders</h2>
-          <ul className="mini-alerts">
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+          <h2 className="text-base font-bold text-slate-900">Upcoming reminders</h2>
+          <ul className="mt-3 space-y-2">
             {seasonalReminders.slice(0, 8).map((r) => (
-              <li key={r.id} className="info">
-                <span className="mini-detail">{r.message}</span>
+              <li key={r.id} className="rounded-lg border border-emerald-100 bg-emerald-50/60 px-3 py-2 text-sm text-emerald-950">
+                {r.message}
               </li>
             ))}
           </ul>
         </section>
       ) : null}
 
-      <section className="panel">
-        <h2 className="panel-heading">Planting calendar</h2>
-        <div className="table-wrap">
-          <table className="data-table">
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <h2 className="mb-3 flex items-center gap-2 text-base font-bold text-slate-900">
+          <Sprout className="size-4 text-emerald-700" aria-hidden />
+          Planting calendar
+        </h2>
+        <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <table className="w-full text-sm">
             <thead>
-              <tr>
-                <th>Crop</th>
-                <th>Plant</th>
-                <th>Expected harvest</th>
-                <th>Farm</th>
-                <th>Notes</th>
-                <th className="w-[1%] whitespace-nowrap">{t('seasonalPage.actions')}</th>
+              <tr className="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <th className="px-4 py-3">Crop</th>
+                <th className="px-4 py-3">Plant</th>
+                <th className="px-4 py-3">Expected harvest</th>
+                <th className="px-4 py-3">Farm</th>
+                <th className="px-4 py-3">Notes</th>
+                <th className="w-[1%] whitespace-nowrap px-4 py-3">{t('seasonalPage.actions')}</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {visibleSeasonalPlans.length === 0 ? (
                 <tr>
                   <td colSpan={6}>
@@ -194,16 +205,16 @@ export default function Seasonal() {
                   .sort((a, b) => (a.plantDate < b.plantDate ? 1 : -1))
                   .map((p) => (
                     <tr key={p.id}>
-                      <td className="fw-semibold">{p.crop}</td>
-                      <td>{p.plantDate}</td>
-                      <td>{p.expectedHarvestDate}</td>
-                      <td className="muted small">{farmLabel(p.farmId)}</td>
-                      <td className="small muted">{p.notes || '—'}</td>
-                      <td>
-                        <div className="inline-tools flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
+                      <td className="px-4 py-3 font-semibold text-slate-900">{p.crop}</td>
+                      <td className="px-4 py-3 text-slate-700">{p.plantDate}</td>
+                      <td className="px-4 py-3 text-slate-700">{p.expectedHarvestDate}</td>
+                      <td className="px-4 py-3 text-xs text-slate-500">{farmLabel(p.farmId)}</td>
+                      <td className="px-4 py-3 text-xs text-slate-500">{p.notes || '—'}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
                           <button
                             type="button"
-                            className="inline-flex items-center justify-center rounded-lg p-1.5 text-slate-600 hover:bg-slate-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                            className="inline-flex min-h-10 min-w-10 items-center justify-center rounded-lg border border-slate-200 bg-white p-1.5 text-slate-600 hover:bg-slate-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
                             title={t('seasonalPage.edit')}
                             aria-label={t('seasonalPage.edit')}
                             onClick={() => openEdit(p)}
@@ -212,7 +223,7 @@ export default function Seasonal() {
                           </button>
                           <button
                             type="button"
-                            className="inline-flex items-center justify-center rounded-lg p-1.5 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/40"
+                            className="inline-flex min-h-10 min-w-10 items-center justify-center rounded-lg border border-red-200 bg-red-50 p-1.5 text-red-600 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-950/40"
                             title={t('seasonalPage.delete')}
                             aria-label={t('seasonalPage.delete')}
                             onClick={() => onDelete(p)}

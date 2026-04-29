@@ -200,7 +200,7 @@ export default function Dashboard() {
   }, [monthOverMonthPct, monthLabelPrev, revenueThisMonth, t, i18n.language]);
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
+    <div className="mx-auto max-w-7xl space-y-6">
       {apiEnabled ? (
         <div className="flex gap-3 rounded-2xl border border-sky-200/90 bg-sky-50/90 px-4 py-3 text-sm text-sky-950 shadow-sm dark:border-sky-900/50 dark:bg-sky-950/30 dark:text-sky-100">
           <Radio className="mt-0.5 size-5 shrink-0 text-sky-700 dark:text-sky-300" aria-hidden />
@@ -363,7 +363,7 @@ export default function Dashboard() {
         <section>
           <h2 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-slate-500">
             <Wheat className="size-4" aria-hidden />
-            {t('dashboard.farmPerformance')}
+            Farmer operations
           </h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard icon={Wheat} label={t('dashboard.lblMyHarvestT')}>
@@ -401,6 +401,14 @@ export default function Dashboard() {
           <div className="mt-4 flex flex-wrap gap-2 text-sm">
             <Link to="/farm" className="font-semibold text-emerald-700 hover:underline">
               {t('nav.myFarm')}
+            </Link>
+            <span className="text-slate-300">·</span>
+            <Link to="/daily-log" className="font-semibold text-emerald-700 hover:underline">
+              {t('nav.dailyReport')}
+            </Link>
+            <span className="text-slate-300">·</span>
+            <Link to="/seasonal" className="font-semibold text-emerald-700 hover:underline">
+              {t('nav.seasonal')}
             </Link>
             <span className="text-slate-300">·</span>
             <Link to="/debts" className="font-semibold text-emerald-700 hover:underline">
@@ -465,7 +473,7 @@ export default function Dashboard() {
         </section>
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-5 lg:grid-cols-2">
         {role !== 'trader' ? (
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
             <h2 className="mb-4 text-base font-bold text-slate-900">{t('dashboard.monthlyCashIn')}</h2>
@@ -569,7 +577,7 @@ export default function Dashboard() {
         </section>
       ) : null}
 
-      {notifications.length > 0 ? (
+      {notifications.length > 0 && role !== 'farmer' ? (
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <h2 className="text-base font-bold text-slate-900">{t('dashboard.alertsSection')}</h2>
           <ul className="mt-3 space-y-2">

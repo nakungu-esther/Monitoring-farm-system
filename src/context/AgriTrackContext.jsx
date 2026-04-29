@@ -2275,7 +2275,14 @@ export function AgriTrackProvider({ children }) {
     if (!currentUser) return [];
     const list = [];
     const threshold = 2;
-    const today = new Date().toISOString().slice(0, 10);
+    const now = new Date();
+    const today = now.toISOString().slice(0, 10);
+    const retentionDays = 14;
+    const cutoffMs = Date.now() - retentionDays * 24 * 60 * 60 * 1000;
+    const isFreshDate = (isoLike) => {
+      const t = new Date(String(isoLike || '')).getTime();
+      return Number.isFinite(t) && t >= cutoffMs;
+    };
 
     const formatSaleLine = (s) => {
       const ugx = Math.round(Number(s.totalPayment) || 0).toLocaleString();
@@ -2296,6 +2303,7 @@ export function AgriTrackProvider({ children }) {
             level: 'info',
             title: `Sale: ${(s.buyerName || 'Buyer').trim()}`,
             detail: formatSaleLine(s),
+            at: s.date || today,
           });
         });
     } else if (currentUser.role === 'trader') {
@@ -2307,6 +2315,7 @@ export function AgriTrackProvider({ children }) {
           level: 'info',
           title: `Purchase: ${(s.produceName || 'Produce').trim()}`,
           detail: `From ${sellerName} · ${formatSaleLine(s)}`,
+          at: s.date || today,
         });
       });
     }
@@ -2319,6 +2328,7 @@ export function AgriTrackProvider({ children }) {
             level: 'warn',
             title: `Low stock: ${produce}`,
             detail: `About ${qty.toFixed(2)} tonnes remaining.`,
+            at: today,
           });
         }
         if (qty < 0) {
@@ -2327,6 +2337,7 @@ export function AgriTrackProvider({ children }) {
             level: 'error',
             title: `Oversold warning: ${produce}`,
             detail: 'Sales exceed recorded harvests for this produce.',
+            at: today,
           });
         }
       });
@@ -2344,6 +2355,7 @@ export function AgriTrackProvider({ children }) {
           level: due ? 'error' : 'warn',
           title: due ? 'Payment overdue to farmer' : 'Outstanding balance',
           detail: `${seller}, ${s.produceName}: UGX ${outstanding.toLocaleString()}${s.creditDueDate ? `, due ${s.creditDueDate}` : ''}.`,
+          at: s.creditDueDate || s.date || today,
         });
       });
     } else {
@@ -2357,6 +2369,7 @@ export function AgriTrackProvider({ children }) {
               level: 'error',
               title: 'Credit / partial payment overdue',
               detail: `${s.buyerName}, ${s.produceName}: UGX ${outstanding.toLocaleString()} outstanding.`,
+              at: s.creditDueDate || s.date || today,
             });
           } else if (outstanding > 0 && s.paymentStatus === 'partial') {
             list.push({
@@ -2364,13 +2377,60 @@ export function AgriTrackProvider({ children }) {
               level: 'warn',
               title: 'Partial payment reminder',
               detail: `${s.buyerName}, balance UGX ${outstanding.toLocaleString()}.`,
+              at: s.date || today,
             });
           }
         }
       });
     }
 
-    return list;
+    // Seasonal schedule notifications for farmers:
+    // - 5 days before due date
+    // - due date itself, from 05:00 local time
+    if (currentUser.role === 'farmer') {
+      seasonalReminders.forEach((r) => {
+        const targetDate =
+          r.type === 'plant' ? r.plan?.plantDate : r.plan?.expectedHarvestDate;
+        const crop = r.plan?.crop || 'Crop';
+        if (!targetDate) return;
+
+        if (r.days === 5) {
+          list.push({
+            id: `seasonal-pre5-${r.type}-${r.plan?.id}-${targetDate}`,
+            level: 'warn',
+            title:
+              r.type === 'plant'
+                ? 'Upcoming planting reminder'
+                : 'Upcoming harvest reminder',
+            detail:
+              r.type === 'plant'
+                ? `${crop}: planting is due in 5 days (${targetDate}).`
+                : `${crop}: expected harvest is in 5 days (${targetDate}).`,
+            at: today,
+          });
+        }
+
+        if (r.days === 0 && now.getHours() >= 5) {
+          list.push({
+            id: `seasonal-due-5am-${r.type}-${r.plan?.id}-${targetDate}`,
+            level: 'error',
+            title:
+              r.type === 'plant'
+                ? 'Planting due today'
+                : 'Harvest due today',
+            detail:
+              r.type === 'plant'
+                ? `${crop}: planting date is today (${targetDate}).`
+                : `${crop}: expected harvest date is today (${targetDate}).`,
+            at: today,
+          });
+        }
+      });
+    }
+
+    return list
+      .filter((n) => isFreshDate(n.at))
+      .map(({ at, ...rest }) => rest);
   }, [
     stockByProduce,
     visibleSales,
@@ -2378,6 +2438,7 @@ export function AgriTrackProvider({ children }) {
     creditOwedAsBuyer,
     state.users,
     purchasesAsBuyer,
+    seasonalReminders,
   ]);
 
   const unreadCount = useMemo(

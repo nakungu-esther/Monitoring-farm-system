@@ -64,7 +64,7 @@ export default function ReceiptActions({ sale, perspective, sellerName, buyerNam
       <div className={`inline-flex items-center gap-1 ${className}`.trim()}>
         <button
           type="button"
-          className="inline-flex items-center gap-1 rounded-lg border border-emerald-200 bg-emerald-50/90 px-2 py-1 text-xs font-semibold text-emerald-900 shadow-sm hover:bg-emerald-100"
+          className="inline-flex min-h-9 items-center gap-1 rounded-lg border border-emerald-200 bg-emerald-50/90 px-2.5 py-1.5 text-xs font-semibold text-emerald-900 shadow-sm transition hover:bg-emerald-100"
           onClick={() => setViewOpen(true)}
           title={t('receipt.viewAria', { defaultValue: 'View receipt' })}
           aria-label={t('receipt.viewAria', { defaultValue: 'View receipt' })}
@@ -74,7 +74,7 @@ export default function ReceiptActions({ sale, perspective, sellerName, buyerNam
         </button>
         <button
           type="button"
-          className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50"
+          className="inline-flex min-h-9 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
           onClick={onDownload}
           title={t('receipt.downloadAria', { defaultValue: 'Download receipt' })}
           aria-label={t('receipt.downloadAria', { defaultValue: 'Download receipt' })}
@@ -84,7 +84,7 @@ export default function ReceiptActions({ sale, perspective, sellerName, buyerNam
         </button>
         <button
           type="button"
-          className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 disabled:opacity-50"
+          className="inline-flex min-h-9 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:opacity-50"
           onClick={() => void onShare()}
           disabled={busy}
           title={t('receipt.shareAria', { defaultValue: 'Share receipt' })}

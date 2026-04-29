@@ -75,17 +75,17 @@ export default function GoogleTranslate() {
 
   return (
     <div
-      className="gt-wrap flex h-7 max-h-7 w-auto max-w-[10rem] shrink-0 items-center gap-1 rounded-md border border-zinc-200/90 bg-zinc-50/95 px-1 py-0.5 dark:border-zinc-600/80 dark:bg-zinc-900/90"
+      className="gt-wrap flex h-7 max-h-7 w-auto max-w-[8.5rem] shrink-0 items-center gap-0.5 rounded-md border border-zinc-200/90 bg-zinc-50/95 px-0.5 py-0.5 dark:border-zinc-600/80 dark:bg-zinc-900/90"
       title={t('topbar.translateHint')}
     >
-      <span className="shrink-0 pl-0.5 text-[11px] font-semibold leading-none text-zinc-700 dark:text-zinc-200">
+      <span className="shrink-0 pl-0.5 text-[10px] font-semibold leading-none text-zinc-700 dark:text-zinc-200">
         {t('topbar.selectLanguage')}
       </span>
-      <div className="relative min-h-0 min-w-0 max-w-[5.75rem] flex-1 sm:max-w-[6.5rem]">
+      <div className="relative min-h-0 min-w-0 max-w-[4.5rem] flex-1 sm:max-w-[5rem]">
         <div
           id={eltId}
           data-agritrack-google-translate=""
-          className="gt-root gt-with-chevron h-6 min-h-0 w-full min-w-0 [&_.goog-te-gadget]:!text-[11px] [&_select]:!h-6 [&_select]:!min-h-0 [&_select]:!max-h-6 [&_select]:!py-0 [&_select]:!pl-1 [&_select]:!pr-5 [&_select]:!text-[11px] [&_select]:!leading-none"
+          className="gt-root gt-with-chevron h-6 min-h-0 w-full min-w-0 [&_.goog-te-gadget]:!text-[10px] [&_select]:!h-6 [&_select]:!min-h-0 [&_select]:!max-h-6 [&_select]:!py-0 [&_select]:!pl-1 [&_select]:!pr-5 [&_select]:!text-[10px] [&_select]:!leading-none"
         />
         <ChevronDown
           className="pointer-events-none absolute right-0 top-1/2 size-3.5 -translate-y-1/2 text-zinc-500 dark:text-zinc-400"

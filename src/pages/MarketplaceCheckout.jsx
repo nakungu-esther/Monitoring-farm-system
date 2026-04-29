@@ -418,7 +418,7 @@ export default function MarketplaceCheckout() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-2xl pb-6 sm:pb-8">
+    <div className="mx-auto w-full max-w-6xl pb-6 sm:pb-8">
       <div className="mb-3 flex flex-col gap-3 sm:mb-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <Link
           to="/marketplace"
@@ -445,120 +445,60 @@ export default function MarketplaceCheckout() {
       <form
         onSubmit={onBuySubmit}
         noValidate
-        className="space-y-2.5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:space-y-3 sm:p-5"
+        className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 lg:grid-cols-3"
       >
-        <p className="text-sm text-slate-600" style={{ marginTop: 0 }}>
-          Seller:&nbsp;
-          <strong>{sellerName(buyHarvest.userId)}</strong>
-          {' '}
-          · Listed:&nbsp;
-          <strong>{Number(buyHarvest.tonnage).toFixed(2)} t</strong>
-          {listPriceUgxPerKg > 0 ? (
-            <>
-              {' '}
-              · Asking:&nbsp;
-              <strong>UGX {listPriceUgxPerKg.toLocaleString()}/kg</strong>
-              {availableKgForHarvest(buyHarvest) > 0 ? (
-                <> · ~{Math.round(availableKgForHarvest(buyHarvest)).toLocaleString()} kg available</>
-              ) : null}
-            </>
-          ) : null}
-        </p>
-        <p className="text-sm text-slate-600">
-          Buyer on this sale (your name):&nbsp;
-          <strong>{buyerLabel}</strong>
-        </p>
-        {farmerAvailable != null ? (
-          <p className="text-sm text-slate-600">
-            <strong>Farmer still has available:</strong> {farmerAvailable.toFixed(2)} t of this produce (system blocks
-            overselling).
-          </p>
-        ) : null}
-
-        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-        <label className="auth-field block">
-          <span className="auth-label">Quantity you&apos;re buying (kg)</span>
-          <input
-            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
-            type="number"
-            step="0.01"
-            value={buyForm.quantityKg}
-            onChange={onQuantityKgChange}
-          />
-          <span className="text-xs text-slate-500">
-            Book value below uses the farmer&apos;s listed price per kg
-            {listPriceUgxPerKg > 0 ? (
-              <>
-                {' '}
-                (<strong className="tabular-nums">UGX {listPriceUgxPerKg.toLocaleString()}/kg</strong>
-                ).
-              </>
-            ) : (
-              ' (this listing has no per-kg price — enter UGX manually).'
-            )}
-            {tonnesPreview > 0 ? (
-              <>
-                {' '}
-                ≈ <strong className="tabular-nums">{tonnesPreview.toFixed(4)}</strong> tonnes (how the sale is stored).
-              </>
-            ) : null}
-          </span>
-        </label>
-        <label className="auth-field block">
-          <span className="auth-label">Total amount (UGX) — book value (ledger; no physical cash in app)</span>
-          <input
-            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
-            type="number"
-            value={buyForm.totalPayment}
-            onChange={(e) => setBuyForm((f) => ({ ...f, totalPayment: e.target.value }))}
-          />
-          <span className="text-xs text-slate-500">
-            {listPriceUgxPerKg > 0
-              ? 'Filled automatically from kg × listed price when you change quantity. You can edit for a negotiated price.'
-              : 'Agreed UGX value on the sale. On-chain Sui and mobile-money references are stored separately.'}
-          </span>
-          {suggestedBookUgx != null && listPriceUgxPerKg > 0 ? (
-            <p className="mb-0 mt-1.5 text-xs text-slate-600">
-              At {listPriceUgxPerKg.toLocaleString()} UGX/kg × your kg:{' '}
-              <strong className="tabular-nums">UGX {suggestedBookUgx.toLocaleString()}</strong>
+        <div className="space-y-3 lg:col-span-2">
+          <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3 text-sm text-slate-700">
+            <p>
+              <strong>Seller:</strong> {sellerName(buyHarvest.userId)} · <strong>Listed:</strong>{' '}
+              {Number(buyHarvest.tonnage).toFixed(2)} t
             </p>
-          ) : null}
-        </label>
-        </div>
-
-        {bookTotalNum > 0 ? (
-          <div
-            className="rounded-xl border border-emerald-200/80 bg-emerald-50/90 px-3 py-2.5 text-sm text-slate-800"
-            role="region"
-            aria-label="Order summary"
-          >
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-emerald-800">
-              One checkout — same sale record
-            </p>
-            <ul className="space-y-1 text-sm">
-              <li className="flex justify-between gap-2">
-                <span>Total (book value)</span>
-                <span className="font-semibold tabular-nums">UGX {bookTotalNum.toLocaleString()}</span>
-              </li>
-              {feePreview.platformFeeUgx > 0 ? (
-                <li className="flex justify-between gap-2 text-slate-700">
-                  <span>Platform fee ({(checkoutCfg.platformFeeBps / 100).toFixed(1)}%)</span>
-                  <span className="tabular-nums">UGX {feePreview.platformFeeUgx.toLocaleString()}</span>
-                </li>
+            <p className="mt-1">
+              <strong>Buyer:</strong> {buyerLabel}
+              {listPriceUgxPerKg > 0 ? (
+                <>
+                  {' '}· <strong>Asking:</strong> UGX {listPriceUgxPerKg.toLocaleString()}/kg
+                </>
               ) : null}
-              <li className="flex justify-between gap-2 border-t border-emerald-200/80 pt-2 font-medium text-emerald-900">
-                <span>Farmer share (ledger)</span>
-                <span className="tabular-nums">UGX {feePreview.farmerPayoutUgx.toLocaleString()}</span>
-              </li>
-            </ul>
-            <p className="mb-0 mt-2 text-xs text-slate-600">
-              How you pay (Sui vs mobile money) only changes the rail — this line item stays the single transaction in
-              AgriTrack.
+              {farmerAvailable != null ? (
+                <>
+                  {' '}· <strong>Available:</strong> {farmerAvailable.toFixed(2)} t
+                </>
+              ) : null}
             </p>
           </div>
-        ) : null}
 
-        <label className="auth-field block">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="auth-field block">
+              <span className="auth-label">Quantity (kg)</span>
+              <input
+                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+                type="number"
+                step="0.01"
+                value={buyForm.quantityKg}
+                onChange={onQuantityKgChange}
+              />
+              <span className="text-xs text-slate-500">
+                {tonnesPreview > 0 ? `≈ ${tonnesPreview.toFixed(4)} t in ledger` : 'Enter quantity'}
+              </span>
+            </label>
+            <label className="auth-field block">
+              <span className="auth-label">Total amount (UGX)</span>
+              <input
+                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+                type="number"
+                value={buyForm.totalPayment}
+                onChange={(e) => setBuyForm((f) => ({ ...f, totalPayment: e.target.value }))}
+              />
+              {suggestedBookUgx != null && listPriceUgxPerKg > 0 ? (
+                <span className="text-xs text-slate-500">
+                  Auto value at listed price: UGX {suggestedBookUgx.toLocaleString()}
+                </span>
+              ) : null}
+            </label>
+          </div>
+
+          <label className="auth-field block">
           <span className="auth-label">Payment method</span>
           <select
             className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
@@ -581,37 +521,25 @@ export default function MarketplaceCheckout() {
             ) : null}
             <option value="mobile_money">Mobile money (MTN / Airtel — digital UGX)</option>
           </select>
-        </label>
-        {currentUser?.role === 'trader' && !premiumTraderActive ? (
-          <p className="text-sm text-slate-600">
-            <strong>Credit (pay later):</strong> upgrade to{' '}
-            <Link className="font-semibold text-emerald-700 hover:underline" to="/upgrade">
-              Premium Trader
-            </Link>{' '}
-            to unlock — cap UGX {MAX_CREDIT_UGX.toLocaleString()} per platform rules.
-          </p>
-        ) : null}
-        {buyForm.settlementMethod === 'sui' ? (
-          <label className="auth-field block">
-            <span className="auth-label">SUI to send ({suiNet})</span>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
-              type="number"
-              step="0.001"
-              value={buyForm.paySuiAmount}
-              onChange={(e) => setBuyForm((f) => ({ ...f, paySuiAmount: e.target.value }))}
-            />
-            <span className="text-xs text-slate-500">
-              Connect wallet — sale stays <strong>pending</strong> until the transfer succeeds.
-            </span>
           </label>
-        ) : null}
-        {buyForm.settlementMethod === 'credit' ? (
-          <>
+          {currentUser?.role === 'trader' && !premiumTraderActive ? (
             <p className="text-sm text-slate-600">
-              Open UGX credit with this seller cannot exceed <strong>UGX {MAX_CREDIT_UGX.toLocaleString()}</strong> for
-              this trader account.
+              Credit requires Premium Trader upgrade (cap UGX {MAX_CREDIT_UGX.toLocaleString()}).
             </p>
+          ) : null}
+          {buyForm.settlementMethod === 'sui' ? (
+            <label className="auth-field block">
+              <span className="auth-label">SUI to send ({suiNet})</span>
+              <input
+                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+                type="number"
+                step="0.001"
+                value={buyForm.paySuiAmount}
+                onChange={(e) => setBuyForm((f) => ({ ...f, paySuiAmount: e.target.value }))}
+              />
+            </label>
+          ) : null}
+          {buyForm.settlementMethod === 'credit' ? (
             <label className="auth-field block">
               <span className="auth-label">Credit due date</span>
               <input
@@ -621,15 +549,14 @@ export default function MarketplaceCheckout() {
                 onChange={(e) => setBuyForm((f) => ({ ...f, creditDueDate: e.target.value }))}
               />
             </label>
-          </>
-        ) : null}
-        {buyForm.settlementMethod === 'mobile_money' ? (
-          <>
-            <div
-              className="space-y-3 rounded-xl border-2 border-emerald-200/90 bg-emerald-50/50 px-3 py-3 text-sm shadow-sm dark:border-emerald-800/50 dark:bg-emerald-950/25"
-              role="region"
-              aria-label={t('marketplaceCheckoutPage.paySellerTitle')}
-            >
+          ) : null}
+          {buyForm.settlementMethod === 'mobile_money' ? (
+            <>
+              <div
+                className="space-y-3 rounded-xl border-2 border-emerald-200/90 bg-emerald-50/50 px-3 py-3 text-sm shadow-sm dark:border-emerald-800/50 dark:bg-emerald-950/25"
+                role="region"
+                aria-label={t('marketplaceCheckoutPage.paySellerTitle')}
+              >
               <p className="text-xs font-semibold uppercase tracking-wide text-emerald-900 dark:text-emerald-200">
                 {t('marketplaceCheckoutPage.paySellerTitle')}
               </p>
@@ -684,131 +611,137 @@ export default function MarketplaceCheckout() {
                   </span>
                 </p>
               ) : null}
+              </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="auth-field block">
+                <span className="auth-label">{t('marketplaceCheckoutPage.yourWalletTitle')}</span>
+                <input
+                  className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-900"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  value={buyForm.payerPhoneMsisdn}
+                  onChange={(e) => setBuyForm((f) => ({ ...f, payerPhoneMsisdn: e.target.value }))}
+                  placeholder="+256…"
+                />
+              </label>
+              <label className="auth-field block">
+                <span className="auth-label">Provider</span>
+                <select
+                  className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-900"
+                  value={buyForm.paymentProvider}
+                  onChange={(e) => setBuyForm((f) => ({ ...f, paymentProvider: e.target.value }))}
+                >
+                  <option value="mtn_momo">MTN MoMo</option>
+                  <option value="airtel_money">Airtel Money</option>
+                  <option value="other">Other / bank-to-wallet</option>
+                </select>
+              </label>
+              <label className="auth-field block sm:col-span-2">
+                <span className="auth-label">Transaction reference</span>
+                <input
+                  className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-900"
+                  value={buyForm.paymentReference}
+                  onChange={(e) => setBuyForm((f) => ({ ...f, paymentReference: e.target.value }))}
+                  placeholder="ID from SMS/app"
+                />
+              </label>
             </div>
+            </>
+          ) : null}
 
-            <label className="auth-field block">
-              <span className="auth-label">{t('marketplaceCheckoutPage.yourWalletTitle')}</span>
-              <input
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-900"
-                inputMode="tel"
-                autoComplete="tel"
-                value={buyForm.payerPhoneMsisdn}
-                onChange={(e) => setBuyForm((f) => ({ ...f, payerPhoneMsisdn: e.target.value }))}
-                placeholder="+256…"
-              />
-              <span className="text-xs text-slate-500">{t('marketplaceCheckoutPage.yourWalletHint')}</span>
-            </label>
+          {showPartial ? (
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="auth-field block">
+                <span className="auth-label">Paid so far (UGX)</span>
+                <input
+                  className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+                  type="number"
+                  value={buyForm.amountPaid}
+                  onChange={(e) => setBuyForm((f) => ({ ...f, amountPaid: e.target.value }))}
+                />
+              </label>
+              <label className="auth-field block">
+                <span className="auth-label">Balance due by</span>
+                <input
+                  className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+                  type="date"
+                  value={buyForm.creditDueDate}
+                  onChange={(e) => setBuyForm((f) => ({ ...f, creditDueDate: e.target.value }))}
+                />
+              </label>
+            </div>
+          ) : null}
 
-            <label className="auth-field block">
-              <span className="auth-label">Provider</span>
-              <select
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-900"
-                value={buyForm.paymentProvider}
-                onChange={(e) => setBuyForm((f) => ({ ...f, paymentProvider: e.target.value }))}
-              >
-                <option value="mtn_momo">MTN MoMo</option>
-                <option value="airtel_money">Airtel Money</option>
-                <option value="other">Other / bank-to-wallet</option>
-              </select>
-            </label>
-            <label className="auth-field block">
-              <span className="auth-label">Transaction reference (from SMS / app)</span>
-              <input
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-900"
-                value={buyForm.paymentReference}
-                onChange={(e) => setBuyForm((f) => ({ ...f, paymentReference: e.target.value }))}
-                placeholder="e.g. ID from your receipt"
-              />
-              <span className="text-xs text-slate-500">{t('marketplaceCheckoutPage.transactionRefHint')}</span>
-            </label>
-            <label className="auth-field block">
-              <span className="auth-label">Ledger status</span>
-              <select
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-900"
-                value={buyForm.paymentStatus}
-                onChange={(e) => setBuyForm((f) => ({ ...f, paymentStatus: e.target.value }))}
-              >
-                <option value="paid">Paid in full (digital)</option>
-                <option value="partial">Partial payment</option>
-              </select>
-            </label>
-          </>
-        ) : null}
-        {showPartial ? (
-          <>
-            <label className="auth-field block">
-              <span className="auth-label">Paid so far (UGX)</span>
+          <label className="auth-field block">
+            <span className="auth-label">Sale date</span>
+            <input
+              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+              type="date"
+              value={buyForm.date}
+              onChange={(e) => setBuyForm((f) => ({ ...f, date: e.target.value }))}
+            />
+          </label>
+        </div>
+
+        <aside className="space-y-3 lg:sticky lg:top-24 lg:self-start">
+          {bookTotalNum > 0 ? (
+            <div className="rounded-xl border border-emerald-200/80 bg-emerald-50/90 px-3 py-3 text-sm text-slate-800">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                Payment summary
+              </p>
+              <ul className="space-y-1 text-sm">
+                <li className="flex justify-between gap-2">
+                  <span>Total</span>
+                  <span className="font-semibold tabular-nums">UGX {bookTotalNum.toLocaleString()}</span>
+                </li>
+                {feePreview.platformFeeUgx > 0 ? (
+                  <li className="flex justify-between gap-2 text-slate-700">
+                    <span>Platform fee ({(checkoutCfg.platformFeeBps / 100).toFixed(1)}%)</span>
+                    <span className="tabular-nums">UGX {feePreview.platformFeeUgx.toLocaleString()}</span>
+                  </li>
+                ) : null}
+                <li className="flex justify-between gap-2 border-t border-emerald-200/80 pt-2 font-medium text-emerald-900">
+                  <span>Farmer share</span>
+                  <span className="tabular-nums">UGX {feePreview.farmerPayoutUgx.toLocaleString()}</span>
+                </li>
+              </ul>
+            </div>
+          ) : null}
+
+          {!apiEnabled ? (
+            <label className="auth-field block rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+              <span className="auth-label">Mock SUI (offline)</span>
               <input
                 className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
                 type="number"
-                value={buyForm.amountPaid}
-                onChange={(e) => setBuyForm((f) => ({ ...f, amountPaid: e.target.value }))}
+                step="0.01"
+                value={buyForm.mockSuiAmount}
+                onChange={(e) => setBuyForm((f) => ({ ...f, mockSuiAmount: e.target.value }))}
+                placeholder={wallet.connected ? 'Link mock ledger' : 'Connect mock wallet'}
+                disabled={!wallet.connected}
               />
             </label>
-            <label className="auth-field block">
-              <span className="auth-label">Balance due by</span>
-              <input
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
-                type="date"
-                value={buyForm.creditDueDate}
-                onChange={(e) => setBuyForm((f) => ({ ...f, creditDueDate: e.target.value }))}
-              />
-            </label>
-          </>
-        ) : null}
-        <label className="auth-field block">
-          <span className="auth-label">Sale date</span>
-          <input
-            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
-            type="date"
-            value={buyForm.date}
-            onChange={(e) => setBuyForm((f) => ({ ...f, date: e.target.value }))}
-          />
-        </label>
-        {!apiEnabled ? (
-          <label className="auth-field block">
-            <span className="auth-label">Mock SUI (optional, offline)</span>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
-              type="number"
-              step="0.01"
-              value={buyForm.mockSuiAmount}
-              onChange={(e) => setBuyForm((f) => ({ ...f, mockSuiAmount: e.target.value }))}
-              placeholder={wallet.connected ? 'Link mock ledger' : 'Connect mock wallet'}
-              disabled={!wallet.connected}
-            />
-          </label>
-        ) : null}
-        {apiEnabled ? (
-          <p className="text-sm text-slate-500">
-            If checkout fails with 403, the farmer can record the same sale in <strong>My Sales</strong> with buyer
-            name <strong>{buyerLabel}</strong>.
-          </p>
-        ) : null}
+          ) : null}
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
-          {bookTotalNum > 0 ? (
-            <p className="text-xs text-slate-500">
-              Due (book){' '}
-              <span className="font-bold tabular-nums text-emerald-800">
-                UGX {bookTotalNum.toLocaleString()}
-              </span>
-            </p>
-          ) : (
-            <span className="text-xs text-slate-400">Review above, then complete purchase.</span>
-          )}
-          <div className="flex flex-wrap gap-2 sm:gap-3">
-            <Link
-              to="/marketplace"
-              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
-            >
-              Cancel
-            </Link>
-            <button type="submit" className="btn-primary rounded-xl px-6 py-2.5 text-sm font-bold" disabled={payBusy}>
-              {payBusy ? 'Working…' : 'Complete purchase'}
-            </button>
+          <div className="space-y-2">
+            {apiEnabled ? (
+              <p className="text-xs text-slate-500">
+                If API checkout fails with 403, seller can record this sale using buyer name <strong>{buyerLabel}</strong>.
+              </p>
+            ) : null}
+            <div className="flex flex-wrap gap-2">
+              <Link
+                to="/marketplace"
+                className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+              >
+                Cancel
+              </Link>
+              <button type="submit" className="btn-primary min-h-11 flex-1 rounded-xl px-4 py-2.5 text-sm font-bold" disabled={payBusy}>
+                {payBusy ? 'Working…' : 'Complete purchase'}
+              </button>
+            </div>
           </div>
-        </div>
+        </aside>
       </form>
     </div>
   );

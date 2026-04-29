@@ -30,6 +30,15 @@ function statusLabel(s) {
   return p;
 }
 
+function escHtml(v) {
+  return String(v ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 /**
  * Structured fields for on-screen receipt preview (same data as download/share).
  * @param {object} sale
@@ -124,11 +133,33 @@ export function buildReceiptPlainText(sale, ctx = {}) {
  * Self-contained HTML file for download / print.
  */
 export function buildReceiptHtmlDocument(sale, ctx = {}) {
-  const text = buildReceiptPlainText(sale, ctx);
-  const escaped = text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  const vm = getReceiptViewModel(sale, ctx);
+  const generatedAt = new Date(vm.generatedAt).toLocaleString();
+  const statusTone =
+    vm.paymentStatus === 'Paid'
+      ? '#065f46'
+      : vm.paymentStatus === 'Credit' || vm.paymentStatus === 'Partial'
+        ? '#92400e'
+        : '#1e3a8a';
+  const detailRows = [
+    ['Produce', vm.produceName],
+    ['Quantity', `${Number(vm.tonnage || 0).toFixed(2)} t`],
+    ['Total amount', vm.fmtUgx(vm.totalPayment)],
+    ['Amount paid', vm.fmtUgx(vm.amountPaid)],
+    ['Settlement', vm.settlement],
+    ['Payment status', vm.paymentStatus],
+    ['Seller', vm.sellerName],
+    ['Buyer', vm.buyerName],
+  ];
+  if (vm.showLedgerSplit) {
+    detailRows.push(['Platform fee', vm.fmtUgx(vm.platformFeeUgx)]);
+    detailRows.push(['Farmer share', vm.fmtUgx(vm.farmerPayoutUgx)]);
+  }
+  if (vm.paymentProvider) detailRows.push(['Provider', vm.paymentProvider]);
+  if (vm.paymentReference) detailRows.push(['Reference', vm.paymentReference]);
+  if (vm.suiTxDigest) detailRows.push(['Sui digest', vm.suiTxDigest]);
+  if (vm.creditDueDate) detailRows.push(['Credit due', vm.creditDueDate]);
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -136,15 +167,61 @@ export function buildReceiptHtmlDocument(sale, ctx = {}) {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Receipt ${safeId(sale)}</title>
   <style>
-    body { font-family: system-ui, Segoe UI, Roboto, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; color: #0f172a; }
-    pre { white-space: pre-wrap; font-size: 0.9rem; line-height: 1.45; }
-    h1 { font-size: 1.25rem; margin-bottom: 0.5rem; }
-    @media print { body { margin: 0; } }
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body { font-family: "Inter", system-ui, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; padding: 24px; }
+    .sheet { max-width: 860px; margin: 0 auto; background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; }
+    .head { padding: 18px 22px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+    .brand { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+    .sub { margin-top: 4px; font-size: 12px; color: #475569; }
+    .badge { font-size: 12px; font-weight: 700; padding: 6px 10px; border-radius: 999px; border: 1px solid #cbd5e1; background: #f8fafc; color: ${statusTone}; }
+    .meta { padding: 14px 22px; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px 20px; border-bottom: 1px solid #e2e8f0; }
+    .meta div { font-size: 12px; color: #334155; }
+    .meta strong { color: #0f172a; }
+    .body { padding: 18px 22px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid #e2e8f0; font-size: 14px; vertical-align: top; }
+    th { width: 34%; color: #475569; font-weight: 600; }
+    td { color: #0f172a; font-weight: 600; }
+    .foot { padding: 14px 22px 20px; font-size: 12px; color: #475569; }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .sheet { border: 0; border-radius: 0; max-width: none; }
+      .head, .meta, .body, .foot { break-inside: avoid; }
+    }
   </style>
 </head>
 <body>
-  <h1>${ctx.appName || 'AgriTrack'} — Receipt</h1>
-  <pre>${escaped}</pre>
+  <article class="sheet">
+    <header class="head">
+      <div>
+        <div class="brand">${escHtml(vm.appName)} Payment Receipt</div>
+        <div class="sub">Operational settlement record</div>
+      </div>
+      <div class="badge">${escHtml(vm.paymentStatus)}</div>
+    </header>
+    <section class="meta">
+      <div><strong>Receipt ID:</strong> ${escHtml(vm.saleId)}</div>
+      <div><strong>Sale date:</strong> ${escHtml(vm.saleDate)}</div>
+      <div><strong>Generated:</strong> ${escHtml(generatedAt)}</div>
+      <div><strong>Perspective:</strong> ${escHtml(vm.perspective === 'buyer' ? 'Buyer' : 'Seller')}</div>
+    </section>
+    <section class="body">
+      <table aria-label="Receipt details">
+        <tbody>
+          ${detailRows
+            .map(
+              ([k, v]) =>
+                `<tr><th scope="row">${escHtml(k)}</th><td>${escHtml(v)}</td></tr>`,
+            )
+            .join('')}
+        </tbody>
+      </table>
+    </section>
+    <footer class="foot">
+      This receipt reflects data recorded in ${escHtml(vm.appName)} and can be used for operational reconciliation.
+    </footer>
+  </article>
 </body>
 </html>`;
 }

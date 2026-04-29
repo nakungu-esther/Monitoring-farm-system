@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Link, Navigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useTranslation, Trans } from 'react-i18next';
 import {
   Mail,
@@ -19,7 +19,6 @@ import { useAgriTrack } from '../context/AgriTrackContext';
 import { API_ENABLED } from '../config';
 import { getStoredToken } from '../api/auth';
 import { popupError, popupSuccess } from '../utils/popupAlerts';
-import LanguageSwitcher from '../components/LanguageSwitcher';
 import PasswordFieldWithEye from '../components/PasswordFieldWithEye';
 import {
   isValidPhoneLoose,
@@ -40,9 +39,7 @@ const REG_BULLETS = ['regBullet1', 'regBullet2', 'regBullet3', 'regBullet4', 're
 
 export default function Auth() {
   const { t, i18n } = useTranslation();
-  const [searchParams] = useSearchParams();
   const { currentUser, login, register } = useAgriTrack();
-  const sessionExpired = searchParams.get('session') === 'expired';
 
   const [mode, setMode] = useState('login');
   const [quickAccountRole, setQuickAccountRole] = useState('farmer');
@@ -68,7 +65,7 @@ export default function Auth() {
     return t('auth.headlineEvening');
   }, [t, i18n.language]);
 
-  /** Farmer/trader presets fill login (admin preset stays dev-only; see quickRoleRows). Omit on strict hosts with VITE_HIDE_QUICK_LOGIN=true. */
+  /** Keep demo presets available unless explicitly hidden by env flag. */
   const showQuickLogin = import.meta.env.VITE_HIDE_QUICK_LOGIN !== 'true';
 
   /** In API mode, only treat as signed-in when JWT exists — avoids loop: 401 clears token → /auth → Navigate to /. */
@@ -166,27 +163,14 @@ export default function Auth() {
     setMode('login');
   };
 
-  const quickRoleRows = import.meta.env.DEV
-    ? [
-        { id: 'farmer', key: 'farmer', Icon: Sprout },
-        { id: 'trader', key: 'trader', Icon: Store },
-        { id: 'admin', key: 'admin', Icon: Shield },
-      ]
-    : [
-        { id: 'farmer', key: 'farmer', Icon: Sprout },
-        { id: 'trader', key: 'trader', Icon: Store },
-      ];
+  const quickRoleRows = [
+    { id: 'farmer', key: 'farmer', Icon: Sprout },
+    { id: 'trader', key: 'trader', Icon: Store },
+    { id: 'admin', key: 'admin', Icon: Shield },
+  ];
 
   return (
     <div className="h-full min-h-0 w-full overflow-y-auto bg-white">
-      {sessionExpired ? (
-        <div
-          className="border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950"
-          role="status"
-        >
-          {t('auth.sessionExpiredBanner')}
-        </div>
-      ) : null}
       <div className="grid min-h-full lg:grid-cols-2">
         <div
           className={`relative flex min-h-0 flex-col justify-between px-8 py-10 text-white sm:px-12 lg:min-h-full lg:px-14 lg:py-14 ${
@@ -246,9 +230,6 @@ export default function Auth() {
 
         <div className="flex flex-col justify-center px-6 py-12 sm:px-10 lg:px-16 xl:px-20">
           <div className="mx-auto w-full max-w-md">
-            <div className="mb-2 flex justify-end">
-              <LanguageSwitcher />
-            </div>
             <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-zinc-900">
               {mode === 'login' ? t('auth.signIn') : t('auth.createAccount')}
             </h2>

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { CalendarRange, Filter, BanknoteArrowUp, WalletCards, TrendingUp, Sprout, ReceiptText } from 'lucide-react';
 import { useAgriTrack } from '../context/AgriTrackContext';
 import { useToast } from '../context/ToastContext';
 import { PRODUCE_OPTIONS, canonicalProduceName } from '../constants/produce';
@@ -65,109 +66,145 @@ export default function Report() {
   };
 
   return (
-    <div className="page report-page">
-      <section className="filters-bar card-like">
-        <div className="filter-group">
-          <label>
-            <span className="filter-label">From</span>
-            <input type="date" value={filterFrom} onChange={(e) => setFilterFrom(e.target.value)} />
+    <div className="mx-auto max-w-7xl space-y-5">
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div className="mb-4 flex items-center gap-2">
+          <Filter className="size-4 text-emerald-700" aria-hidden />
+          <h2 className="text-base font-bold text-slate-900">Report filters</h2>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <label className="block">
+            <span className="mb-1.5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <CalendarRange className="size-3.5" aria-hidden />
+              From
+            </span>
+            <input
+              type="date"
+              value={filterFrom}
+              onChange={(e) => setFilterFrom(e.target.value)}
+              className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15"
+            />
           </label>
-          <label>
-            <span className="filter-label">To</span>
-            <input type="date" value={filterTo} onChange={(e) => setFilterTo(e.target.value)} />
+          <label className="block">
+            <span className="mb-1.5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <CalendarRange className="size-3.5" aria-hidden />
+              To
+            </span>
+            <input
+              type="date"
+              value={filterTo}
+              onChange={(e) => setFilterTo(e.target.value)}
+              className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15"
+            />
           </label>
-          <label>
-            <span className="filter-label">Produce</span>
-            <select value={filterProduce} onChange={(e) => setFilterProduce(e.target.value)}>
+          <label className="block sm:col-span-2 xl:col-span-1">
+            <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Produce
+            </span>
+            <select
+              value={filterProduce}
+              onChange={(e) => setFilterProduce(e.target.value)}
+              className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15"
+            >
               <option value="">All</option>
               {PRODUCE_OPTIONS.map((p) => (
                 <option key={p} value={p}>{p}</option>
               ))}
             </select>
           </label>
+          <div className="hidden xl:block" />
         </div>
       </section>
 
-      <div className="kpi-grid kpi-sm">
-        <div className="kpi-card">
-          <div className="kpi-label">Revenue (scope)</div>
-          <div className="kpi-value">
-            <span className="num-prefix">UGX</span>
-            <span className="num-lg">{filteredSales.reduce((a, s) => a + Math.min(s.amountPaid ?? 0, s.totalPayment), 0).toLocaleString()}</span>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <BanknoteArrowUp className="size-4 text-emerald-700" aria-hidden />
+            Revenue (scope)
+          </div>
+          <div className="mt-2 text-2xl font-bold text-slate-900">
+            UGX {filteredSales.reduce((a, s) => a + Math.min(s.amountPaid ?? 0, s.totalPayment), 0).toLocaleString()}
           </div>
         </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Total expenses</div>
-          <div className="kpi-value">
-            <span className="num-prefix">UGX</span>
-            <span className="num-lg">{totalExpenses.toLocaleString()}</span>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <WalletCards className="size-4 text-amber-700" aria-hidden />
+            Total expenses
+          </div>
+          <div className="mt-2 text-2xl font-bold text-slate-900">
+            UGX {totalExpenses.toLocaleString()}
           </div>
         </div>
-        <div className="kpi-card kpi-accent">
-          <div className="kpi-label">Profit (overall)</div>
-          <div className="kpi-value">
-            <span className="num-prefix">UGX</span>
-            <span className="num-lg">{profit.toLocaleString()}</span>
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-5 shadow-sm">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-emerald-900/70">
+            <TrendingUp className="size-4 text-emerald-700" aria-hidden />
+            Profit (overall)
+          </div>
+          <div className="mt-2 text-2xl font-bold text-emerald-950">
+            UGX {profit.toLocaleString()}
           </div>
         </div>
       </div>
 
-      <section className="panel">
-        <h2 className="panel-heading sm">Quick expense</h2>
-        <form onSubmit={onExpSubmit} className="inline-tools wrap" noValidate>
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <h2 className="text-base font-bold text-slate-900 sm:text-lg">Quick expense</h2>
+        <form onSubmit={onExpSubmit} className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4" noValidate>
           <input
             placeholder="Description"
             value={expForm.label}
             onChange={(e) => setExpForm((f) => ({ ...f, label: e.target.value }))}
-            className="input-inline grow"
+            className="min-h-11 rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15 xl:col-span-2"
           />
           <input
             type="number"
             placeholder="UGX"
             value={expForm.amount}
             onChange={(e) => setExpForm((f) => ({ ...f, amount: e.target.value }))}
-            className="input-inline"
+            className="min-h-11 rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15"
           />
           <input
             type="date"
             value={expForm.date}
             onChange={(e) => setExpForm((f) => ({ ...f, date: e.target.value }))}
-            className="input-inline"
+            className="min-h-11 rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500/50 focus:bg-white focus:ring-4 focus:ring-emerald-600/15"
           />
-          <button type="submit" className="btn-secondary">Add</button>
+          <button type="submit" className="inline-flex min-h-11 items-center justify-center rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-800 sm:col-span-2 xl:col-span-4">
+            <ReceiptText className="mr-2 size-4" aria-hidden />
+            Add expense line
+          </button>
         </form>
       </section>
 
-      <section className="panel">
-        <div className="panel-head">
-          <h2 className="panel-heading">Filtered sales</h2>
-          <span className="muted small">{filteredSales.length} rows</span>
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <h2 className="text-base font-bold text-slate-900 sm:text-lg">Filtered sales</h2>
+          <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">{filteredSales.length} rows</span>
         </div>
-        <div className="table-wrap">
-          <table className="data-table striped">
-            <thead>
+        <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
               <tr>
-                <th>Date</th>
-                <th>Buyer</th>
-                <th>Produce</th>
-                <th>UGX</th>
-                <th>Status</th>
+                <th className="px-4 py-3">Date</th>
+                <th className="px-4 py-3">Buyer</th>
+                <th className="px-4 py-3">Produce</th>
+                <th className="px-4 py-3">UGX</th>
+                <th className="px-4 py-3">Status</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {filteredSales.length === 0 ? (
-                <tr><td colSpan={5} className="muted center">No sales match filters.</td></tr>
+                <tr><td colSpan={5} className="px-4 py-10 text-center text-sm text-slate-500">No sales match filters.</td></tr>
               ) : (
                 filteredSales
                   .slice()
                   .sort((a, b) => (a.date < b.date ? 1 : -1))
                   .map((s) => (
                     <tr key={s.id}>
-                      <td>{s.date}</td>
-                      <td className="fw-semibold">{s.buyerName}</td>
-                      <td>{s.produceName}</td>
-                      <td className="tabular">{Number(s.totalPayment).toLocaleString()}</td>
-                      <td><span className={`badge-status st-${s.paymentStatus}`}>{s.paymentStatus}</span></td>
+                      <td className="px-4 py-3 text-slate-600">{s.date}</td>
+                      <td className="px-4 py-3 font-semibold text-slate-900">{s.buyerName}</td>
+                      <td className="px-4 py-3 text-slate-700">{s.produceName}</td>
+                      <td className="px-4 py-3 tabular-nums">UGX {Number(s.totalPayment).toLocaleString()}</td>
+                      <td className="px-4 py-3"><span className={`badge-status st-${s.paymentStatus}`}>{s.paymentStatus}</span></td>
                     </tr>
                   ))
               )}
@@ -176,19 +213,19 @@ export default function Report() {
         </div>
       </section>
 
-      <section className="panel">
-        <div className="panel-head">
-          <h2 className="panel-heading">Harvests</h2>
-          <span className="muted small">{visibleHarvests.length} total</span>
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <h2 className="flex items-center gap-2 text-base font-bold text-slate-900 sm:text-lg"><Sprout className="size-4 text-emerald-700" aria-hidden /> Harvests</h2>
+          <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">{visibleHarvests.length} total</span>
         </div>
-        <div className="table-wrap">
-          <table className="data-table striped">
-            <thead>
-              <tr><th>Produce</th><th>Tonnage</th><th>Date</th></tr>
+        <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <tr><th className="px-4 py-3">Produce</th><th className="px-4 py-3">Tonnage</th><th className="px-4 py-3">Date</th></tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {visibleHarvests.length === 0 ? (
-                <tr><td colSpan={3} className="muted center">No harvests.</td></tr>
+                <tr><td colSpan={3} className="px-4 py-10 text-center text-sm text-slate-500">No harvests.</td></tr>
               ) : (
                 visibleHarvests
                   .filter(
@@ -200,9 +237,9 @@ export default function Report() {
                   .sort((a, b) => (a.date < b.date ? 1 : -1))
                   .map((h) => (
                     <tr key={h.id}>
-                      <td>{h.produceName}</td>
-                      <td className="tabular">{Number(h.tonnage).toFixed(2)}</td>
-                      <td>{h.date}</td>
+                      <td className="px-4 py-3 text-slate-800">{h.produceName}</td>
+                      <td className="px-4 py-3 tabular-nums">{Number(h.tonnage).toFixed(2)} t</td>
+                      <td className="px-4 py-3 text-slate-600">{h.date}</td>
                     </tr>
                   ))
               )}
@@ -211,25 +248,25 @@ export default function Report() {
         </div>
       </section>
 
-      <section className="panel">
-        <h2 className="panel-heading sm">Expense lines</h2>
-        <div className="table-wrap">
-          <table className="data-table striped">
-            <thead>
-              <tr><th>Label</th><th>Amount</th><th>Date</th></tr>
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <h2 className="mb-3 text-base font-bold text-slate-900 sm:text-lg">Expense lines</h2>
+        <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <tr><th className="px-4 py-3">Label</th><th className="px-4 py-3">Amount</th><th className="px-4 py-3">Date</th></tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {visibleExpenses.length === 0 ? (
-                <tr><td colSpan={3} className="muted center">None logged.</td></tr>
+                <tr><td colSpan={3} className="px-4 py-10 text-center text-sm text-slate-500">None logged.</td></tr>
               ) : (
                 visibleExpenses
                   .slice()
                   .sort((a, b) => (a.date < b.date ? 1 : -1))
                   .map((ex) => (
                     <tr key={ex.id}>
-                      <td>{ex.label}</td>
-                      <td className="tabular">{ex.amount.toLocaleString()}</td>
-                      <td>{ex.date}</td>
+                      <td className="px-4 py-3 text-slate-800">{ex.label}</td>
+                      <td className="px-4 py-3 tabular-nums">UGX {ex.amount.toLocaleString()}</td>
+                      <td className="px-4 py-3 text-slate-600">{ex.date}</td>
                     </tr>
                   ))
               )}
