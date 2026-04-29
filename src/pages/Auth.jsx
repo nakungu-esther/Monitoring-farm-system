@@ -172,14 +172,11 @@ export default function Auth() {
         <div
           className={`relative flex min-h-0 flex-col justify-between px-8 py-10 text-white sm:px-12 lg:px-14 lg:py-14 ${
             mode === 'login'
-              ? 'bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-700'
+              ? 'hero'
               : 'bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800'
           }`}
         >
-          <div className="pointer-events-none absolute inset-0 opacity-[0.12]">
-            <div className="absolute -left-20 top-20 size-72 rounded-full bg-white blur-3xl" />
-            <div className="absolute bottom-10 right-0 size-96 rounded-full bg-white blur-3xl" />
-          </div>
+          {mode === 'login' ? <div className="overlay pointer-events-none" /> : null}
           <div className="relative">
             <div className="flex items-center gap-3">
               <div className="flex size-11 items-center justify-center rounded-xl bg-white/20 shadow-lg ring-1 ring-white/30">
@@ -298,7 +295,7 @@ export default function Auth() {
                         value={loginForm.identifier}
                         onChange={(e) => setLoginForm((f) => ({ ...f, identifier: e.target.value }))}
                         placeholder={t('auth.placeholderEmail')}
-                        className="w-full rounded-xl border border-zinc-200 bg-zinc-50/80 py-3 pl-11 pr-4 text-zinc-900 outline-none ring-emerald-500/0 transition placeholder:text-zinc-400 focus:border-emerald-400 focus:bg-white focus:ring-4 focus:ring-emerald-500/15 disabled:bg-zinc-100 disabled:opacity-90"
+                        className="w-full rounded-xl border border-[#e3e7ee] bg-[#f2f4f7] py-3 pl-11 pr-4 text-zinc-900 outline-none ring-[#22c55e]/0 transition placeholder:text-zinc-400 focus:border-[#22c55e] focus:bg-white focus:ring-4 focus:ring-[#22c55e]/20 disabled:bg-zinc-100 disabled:opacity-90"
                       />
                     </div>
                   </label>
@@ -328,7 +325,7 @@ export default function Auth() {
                     type="submit"
                     disabled={loginBusy}
                     aria-busy={loginBusy}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-600/25 transition hover:bg-emerald-700 disabled:pointer-events-none disabled:opacity-80"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1fb05f] py-3.5 text-sm font-bold text-white shadow-lg shadow-[#1fb05f]/30 transition hover:bg-[#16954f] disabled:pointer-events-none disabled:opacity-80"
                   >
                     {loginBusy ? (
                       <>
@@ -428,7 +425,7 @@ export default function Auth() {
                       value={regForm.email}
                       onChange={(e) => setRegForm((f) => ({ ...f, email: e.target.value }))}
                       placeholder={t('auth.placeholderEmail')}
-                      className="w-full rounded-xl border border-zinc-200 bg-zinc-50/80 py-3 pl-11 pr-4 outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-4 focus:ring-emerald-500/15"
+                      className="w-full rounded-xl border border-[#e3e7ee] bg-[#f2f4f7] py-3 pl-11 pr-4 outline-none transition focus:border-[#22c55e] focus:bg-white focus:ring-4 focus:ring-[#22c55e]/20"
                     />
                   </div>
                 </label>
@@ -469,7 +466,7 @@ export default function Auth() {
 
                 <button
                   type="submit"
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-600/25 transition hover:bg-emerald-700"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1fb05f] py-3.5 text-sm font-bold text-white shadow-lg shadow-[#1fb05f]/30 transition hover:bg-[#16954f]"
                 >
                   {t('auth.createBtn')}
                   <ArrowRight className="size-4" aria-hidden />

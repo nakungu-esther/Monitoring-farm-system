@@ -23,7 +23,7 @@ export default function PasswordFieldWithEye({
   const wrap =
     variant === 'slate'
       ? 'flex rounded-xl border border-slate-200 bg-white shadow-sm focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20'
-      : 'flex rounded-xl border border-zinc-200 bg-zinc-50/80 focus-within:border-emerald-400 focus-within:bg-white focus-within:ring-4 focus-within:ring-emerald-500/15';
+      : 'flex rounded-xl border border-[#e3e7ee] bg-[#f2f4f7] focus-within:border-[#22c55e] focus-within:bg-white focus-within:ring-4 focus-within:ring-[#22c55e]/20';
   const padL = leftIcon ? 'pl-11' : 'pl-3';
   const input =
     variant === 'slate'
