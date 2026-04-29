@@ -714,11 +714,26 @@ export function AgriTrackProvider({ children }) {
   const purchasesAsBuyer = useMemo(() => {
     if (!currentUser) return [];
     const uid = currentUser.id;
-    const name = currentUser.profile?.name?.trim().toLowerCase() || '';
+    // Buyer matching can be inconsistent for older records (e.g. buyer stored as "Trader" but your profile is "Trader John").
+    // Normalize spacing/case and allow a conservative fallback to the first token.
+    const nameRaw = currentUser.profile?.name?.trim() || '';
+    const name = nameRaw.toLowerCase().replace(/\s+/g, ' ');
+    const nameFirst = name.split(' ')[0] || '';
     return state.sales
       .filter((s) => {
-        const nameMatch = name && (s.buyerName || '').trim().toLowerCase() === name;
-        const idMatch = s.buyerUserId === uid;
+        const buyerNameRaw = (s.buyerName || '').trim();
+        const buyerName = buyerNameRaw.toLowerCase().replace(/\s+/g, ' ');
+        const buyerFirst = buyerName.split(' ')[0] || '';
+
+        // Prefer id match when backend provides it; coerce to string to avoid number/string mismatch.
+        const idMatch =
+          s.buyerUserId != null && String(s.buyerUserId).trim() !== '' && String(s.buyerUserId) === String(uid);
+
+        const nameMatch =
+          (name && buyerName === name) ||
+          (name && buyerName === nameFirst) ||
+          (nameFirst && buyerFirst === nameFirst);
+
         return nameMatch || idMatch;
       })
       .slice()
