@@ -51,7 +51,6 @@ export default function Dashboard() {
     visibleSales,
     visibleHarvests,
     currentUser,
-    isAdmin,
     notifications,
     markNotificationRead,
     seasonalReminders,
@@ -77,26 +76,21 @@ export default function Dashboard() {
     toast(t('dashboard.apiSyncToast', { error: apiStatus.error }), 'error');
   }, [apiEnabled, apiStatus.error, toast, t]);
 
-  const role = currentUser?.role || 'farmer';
+  // Hide Admin entirely in the deployed presentation: treat it as Farmer for UI purposes.
+  const role = currentUser?.role === 'admin' ? 'farmer' : currentUser?.role || 'farmer';
   const firstName =
     profileNameWithoutDemoPrefix(currentUser?.profile?.name)?.split(/\s+/)[0] ||
     t('dashboard.fallbackGreetName');
 
   const welcomeLine = useMemo(() => {
     if (!currentUser) return '';
-    const panel =
-      currentUser.role === 'admin'
-        ? t('welcome.adminConsole')
-        : currentUser.role === 'trader'
-          ? t('welcome.traderPanel')
-          : t('welcome.farmerWorkspace');
+    const panel = role === 'trader' ? t('welcome.traderPanel') : t('welcome.farmerWorkspace');
     const name = profileNameWithoutDemoPrefix(currentUser.profile?.name || '');
-    const roleNameEn =
-      currentUser.role === 'admin' ? 'Admin' : currentUser.role === 'trader' ? 'Trader' : 'Farmer';
+    const roleNameEn = role === 'trader' ? 'Trader' : 'Farmer';
     if (!name) return panel;
     if (name === roleNameEn) return panel;
     return `${name} · ${panel}`;
-  }, [currentUser, t, i18n.language]);
+  }, [currentUser, role, t, i18n.language]);
 
   const {
     totalStockTonnes,
@@ -176,14 +170,12 @@ export default function Dashboard() {
       return t('dashboard.heroAlertMany', { count: n });
     }
     if (role === 'trader') return t('dashboard.heroTraderClear');
-    if (role === 'admin') return t('dashboard.heroAdmin');
     return t('dashboard.heroFarmer');
   }, [notifications.length, role, t, i18n.language]);
 
-  const ctaTo = role === 'trader' ? '/marketplace' : role === 'admin' ? '/admin' : '/farm';
+  const ctaTo = role === 'trader' ? '/marketplace' : '/farm';
   const ctaLabel = useMemo(() => {
     if (role === 'trader') return t('dashboard.ctaMarketplace');
-    if (role === 'admin') return t('dashboard.ctaAdmin');
     return t('dashboard.ctaProduce');
   }, [role, t, i18n.language]);
 
@@ -570,12 +562,7 @@ export default function Dashboard() {
         </section>
       ) : null}
 
-      {isAdmin ? (
-        <section className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-5 text-sm text-zinc-900">
-          <strong>{t('dashboard.adminVisibility')}</strong>{' '}
-          {t('dashboard.harvestsInView', { h: visibleHarvests.length, s: visibleSales.length })}
-        </section>
-      ) : null}
+      {null}
 
       {notifications.length > 0 && role !== 'farmer' ? (
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">

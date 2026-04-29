@@ -167,23 +167,6 @@ function appendSupplyStep(state, saleId, stage, note, userId) {
 const seedState = () => ({
   users: [
     {
-      id: 'u-admin',
-      email: 'admin@agritrack.demo',
-      password: 'admin123',
-      role: 'admin',
-      isPremium: false,
-      subscriptionType: 'free',
-      premiumUntil: null,
-      profile: {
-        name: 'Admin',
-        phone: '+256700000001',
-        location: 'Kampala',
-        receiveMoneyPhone: '',
-        receiveMoneyName: '',
-        bankDetails: '',
-      },
-    },
-    {
       id: 'u-farmer',
       email: 'farmer@agritrack.demo',
       password: 'farmer123',
@@ -348,6 +331,10 @@ function loadState() {
       },
     }));
     users = migrateSeedDisplayNames(users);
+    // Deployed presentation: hide Admin entirely (no admin demo accounts in UI/UX).
+    if (import.meta.env.PROD) {
+      users = users.filter((u) => u.role !== 'admin');
+    }
     const salesFromStore = Array.isArray(parsed.sales) ? parsed.sales : base.sales;
     const out = {
       ...base,

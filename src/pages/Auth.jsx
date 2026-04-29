@@ -6,7 +6,6 @@ import {
   User,
   Sprout,
   Store,
-  Shield,
   Check,
   Globe,
   BookOpen,
@@ -32,7 +31,6 @@ import {
 const QUICK_LOGIN_PRESETS = {
   farmer: { identifier: 'farmer@agritrack.demo', password: 'farmer123' },
   trader: { identifier: 'trader@agritrack.demo', password: 'trader123' },
-  admin: { identifier: 'admin@agritrack.demo', password: 'admin123' },
 };
 
 const REG_BULLETS = ['regBullet1', 'regBullet2', 'regBullet3', 'regBullet4', 'regBullet5'];
@@ -166,14 +164,13 @@ export default function Auth() {
   const quickRoleRows = [
     { id: 'farmer', key: 'farmer', Icon: Sprout },
     { id: 'trader', key: 'trader', Icon: Store },
-    { id: 'admin', key: 'admin', Icon: Shield },
   ];
 
   return (
-    <div className="h-full min-h-0 w-full overflow-y-auto bg-white">
-      <div className="grid min-h-full lg:grid-cols-2">
+    <div className="w-full min-h-[100dvh] overflow-y-auto bg-white">
+      <div className="grid min-h-[100dvh] lg:grid-cols-2">
         <div
-          className={`relative flex min-h-0 flex-col justify-between px-8 py-10 text-white sm:px-12 lg:min-h-full lg:px-14 lg:py-14 ${
+          className={`relative flex min-h-0 flex-col justify-between px-8 py-10 text-white sm:px-12 lg:px-14 lg:py-14 ${
             mode === 'login'
               ? 'bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-700'
               : 'bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800'
@@ -228,7 +225,7 @@ export default function Auth() {
           <p className="relative mt-12 text-xs text-white/70 lg:mt-0">{t('auth.footer')}</p>
         </div>
 
-        <div className="flex flex-col justify-center px-6 py-12 sm:px-10 lg:px-16 xl:px-20">
+        <div className="relative flex flex-col justify-center px-6 py-12 sm:px-10 lg:px-16 xl:px-20">
           <div className="mx-auto w-full max-w-md">
             <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-zinc-900">
               {mode === 'login' ? t('auth.signIn') : t('auth.createAccount')}
@@ -480,6 +477,23 @@ export default function Auth() {
               </form>
             )}
           </div>
+
+          {mode === 'login' && loginBusy ? (
+            <div
+              className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-center"
+              aria-hidden
+            >
+              <div className="mt-4 w-full max-w-md rounded-2xl border border-emerald-200 bg-white/90 px-5 py-4 shadow-sm backdrop-blur">
+                <div className="flex items-center gap-2 text-sm font-semibold text-emerald-800">
+                  <Loader2 className="size-4 animate-spin" aria-hidden />
+                  {t('auth.signInLoading')}
+                </div>
+                <div className="mt-1 text-xs text-emerald-900/80">
+                  Waiting for the server… (this can take a moment on slow connections)
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

@@ -9,7 +9,7 @@ import { isValidPhoneLoose, minTrimmedLength } from '../utils/authValidation';
 
 export default function Profile() {
   const { t } = useTranslation();
-  const { currentUser, updateProfile, isAdmin } = useAgriTrack();
+  const { currentUser, updateProfile } = useAgriTrack();
   const { toast } = useToast();
   const [form, setForm] = useState({
     name: '',
@@ -92,6 +92,8 @@ export default function Profile() {
 
   if (!currentUser) return null;
 
+  const displayRole = currentUser.role === 'admin' ? 'farmer' : currentUser.role;
+
   return (
     <div className="mx-auto max-w-5xl space-y-5">
       <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
@@ -120,7 +122,7 @@ export default function Profile() {
             </button>
             <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold capitalize text-slate-800">
               <Shield className="size-3.5" aria-hidden />
-              {currentUser.role}
+              {displayRole}
             </div>
             <p className="mt-3 flex items-center gap-2 text-sm text-slate-700">
               <Mail className="size-4 shrink-0 text-slate-400" aria-hidden />
@@ -184,7 +186,7 @@ export default function Profile() {
             </div>
           </section>
 
-          {currentUser.role === 'farmer' ? (
+          {displayRole === 'farmer' ? (
             <section className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-5 shadow-sm sm:p-6">
               <h3 className="flex items-center gap-2 text-sm font-bold text-emerald-950 sm:text-base">
                 <Smartphone className="size-4 text-emerald-700" aria-hidden />

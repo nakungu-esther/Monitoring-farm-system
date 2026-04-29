@@ -11,9 +11,6 @@ import {
   Store,
   ClipboardList,
   CreditCard,
-  Users,
-  BarChart3,
-  Settings,
   Calendar,
   MapPin,
   Link2,
@@ -68,20 +65,8 @@ export const traderNav = [
   { to: '/upgrade', labelKey: 'nav.upgrade', Icon: Sparkles },
 ];
 
-export const adminNav = [
-  { to: '/', labelKey: 'nav.dashboard', end: true, Icon: LayoutDashboard },
-  { to: '/daily-log', labelKey: 'nav.farmReports', Icon: BookOpen },
-  { to: '/admin', labelKey: 'nav.users', Icon: Users },
-  { to: '/farms', labelKey: 'nav.farms', Icon: Sprout },
-  { to: '/sales', labelKey: 'nav.sales', Icon: ShoppingCart },
-  { to: '/transactions', labelKey: 'nav.transactions', Icon: Wallet },
-  { to: '/reports', labelKey: 'nav.reports', Icon: BarChart3 },
-  { to: '/settings', labelKey: 'nav.settings', Icon: Settings },
-];
-
 export function getNavForRole(role) {
   const r = normalizeAppRole(role);
-  if (r === 'admin') return adminNav;
   if (r === 'trader') return traderNav;
   return farmerNav;
 }

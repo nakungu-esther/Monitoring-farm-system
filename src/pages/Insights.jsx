@@ -54,7 +54,8 @@ export default function Insights() {
     purchasesAsBuyer,
   } = useAgriTrack();
 
-  const role = currentUser?.role || 'farmer';
+  // Deployed presentation: hide Admin experience, treat it as Farmer for UI purposes.
+  const role = currentUser?.role === 'admin' ? 'farmer' : currentUser?.role || 'farmer';
   const firstName = currentUser?.profile?.name?.split(' ')[0] || 'there';
 
   const adminRollup = useMemo(() => {

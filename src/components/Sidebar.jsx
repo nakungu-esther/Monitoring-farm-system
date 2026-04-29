@@ -85,11 +85,11 @@ export default function Sidebar({ mobileOpen = false, onNavigate }) {
           </div>
           <p className="mt-1 text-xs text-white/90">{t('sidebar.proInsightBody')}</p>
           <Link
-            to={role === 'admin' ? '/insights' : '/upgrade'}
+            to="/upgrade"
             onClick={closeIfMobile}
             className="mt-3 block w-full rounded-lg bg-white py-2 text-center text-xs font-bold text-emerald-900 transition hover:bg-emerald-50 dark:bg-emerald-100 dark:text-emerald-950 dark:hover:bg-white"
           >
-            {role === 'admin' ? t('sidebar.proInsightCta') : t('sidebar.upgradeCta')}
+            {t('sidebar.upgradeCta')}
           </Link>
         </div>
       </div>
